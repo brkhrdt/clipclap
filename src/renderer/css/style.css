@@ -1,0 +1,37 @@
+.history-item {
+  position: relative; /* Enables absolute positioning for the button */
+  margin-bottom: 10px; /* Space between items */
+  padding: 10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.history-text {
+  /* display: inline-block; */
+  white-space: pre-wrap;
+  max-width: calc(100% - 60px); /* Ensure the text doesn't overlap the button */
+}
+.history-date {
+  /* display: inline-block; */
+  max-width: calc(100% - 60px);
+  font-size: 10px; /* Smaller font size */
+  color: grey; /* Grey color for less emphasis */
+}
+
+.copy-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  padding: 5px 10px;
+  font-size: 14px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.copy-button:hover {
+  background-color: #45a049;
+}
