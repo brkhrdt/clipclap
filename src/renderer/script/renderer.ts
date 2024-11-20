@@ -45,4 +45,8 @@ window.electron.onClipboardUpdated((event: Event, history: Clip[]) => {
     } else {
         console.error("Element with id 'history' not found.");
     }
+}
+
+window.electron.onClipboardUpdated((event: Event, history: Clip[]) => {
+    updateHistory(history);
 });
