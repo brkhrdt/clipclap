@@ -18,6 +18,7 @@ if (require('electron-squirrel-startup')) {
 
 let clipboardHistory: Clip[] = [];
 const maxHistorySize = 30;
+const CLIPBOARD_POLL_RATE = 1000;
 
 const APP_DIR = app.getAppPath();
 
@@ -68,7 +69,7 @@ function watchClipboard() {
             rendererContents.send(EVENTS.CLIPBOARD_UPDATED, clipboardHistory);
         }
     }
-    }, 1000);
+    }, CLIPBOARD_POLL_RATE);
 }
 
 // This method will be called when Electron has finished
