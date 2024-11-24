@@ -2,8 +2,19 @@ import { Clip } from '../../clip';
 
 import '../css/style.css';
 
-window.electron.onClipboardUpdated((event: Event, history: Clip[]) => {
 
+// Set up the search input listener
+const searchInput = document.getElementById('searchInput') as HTMLInputElement;
+
+// Listen for changes in the search input field
+searchInput.addEventListener('input', async () => {
+    const query = searchInput.value;
+    const newHistory = await window.electron.filterHistory(query);  // Update search results based on input value
+    console.log('new hist', newHistory);
+    updateHistory(newHistory);
+});
+
+function updateHistory(history: Clip[]): void {
     const historyElement = document.getElementById('history');
     
     if (historyElement) {
