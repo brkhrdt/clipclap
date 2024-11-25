@@ -46,6 +46,7 @@
   "dependencies": {
     "electron-squirrel-startup": "^1.0.1",
     "fuse.js": "^7.0.0",
+    "monaco-editor": "^0.52.0",
     "openai": "^4.73.0"
   }
 }

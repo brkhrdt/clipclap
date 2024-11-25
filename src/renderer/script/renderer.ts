@@ -1,4 +1,5 @@
 import { Clip } from '../../clip';
+import * as monaco from 'monaco-editor';
 
 import '../css/style.css';
 
@@ -32,11 +33,12 @@ function updateHistory(history: Clip[]): void {
             dateDiv.classList.add('history-date');
             dateDiv.textContent = item.date.toLocaleString();
 
+            const buttonDiv = document.createElement('div');
+            buttonDiv.classList.add('button-container');
             
             const copyButton = document.createElement('button');
             copyButton.classList.add('copy-button');
             copyButton.textContent = 'Copy';
-
             copyButton.addEventListener('click', () => {
                 navigator.clipboard.writeText(item.data)
                     .then(() => {
@@ -46,10 +48,19 @@ function updateHistory(history: Clip[]): void {
                         console.error('Error copying text: ', err);
                     });
             });
+            const editButton = document.createElement('button');
+            editButton.classList.add('edit-button');
+            editButton.textContent = 'Edit';
+            editButton.addEventListener('click', () => {
+                editor.setValue(item.data);
+            });
+
+            buttonDiv.appendChild(copyButton);
+            buttonDiv.appendChild(editButton);
 
             itemDiv.appendChild(textDiv);
             itemDiv.appendChild(dateDiv);
-            itemDiv.appendChild(copyButton);
+            itemDiv.appendChild(buttonDiv);
 
             historyElement.appendChild(itemDiv);
         });
@@ -60,4 +71,15 @@ function updateHistory(history: Clip[]): void {
 
 window.electron.onClipboardUpdated((event: Event, history: Clip[]) => {
     updateHistory(history);
+});
+
+
+const editor = monaco.editor.create(document.getElementById('editor'), {
+	value: ''
+	// language: 'javascript'
+});
+
+// Resize the editor when window is resized
+window.addEventListener('resize', function() {
+    editor.layout();
 });
