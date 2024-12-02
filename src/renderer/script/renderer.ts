@@ -1,5 +1,4 @@
 import { Clip } from '../../clip';
-import * as monaco from 'monaco-editor';
 
 import '../css/style.css';
 
@@ -52,7 +51,11 @@ function updateHistory(history: Clip[]): void {
             editButton.classList.add('edit-button');
             editButton.textContent = 'Edit';
             editButton.addEventListener('click', () => {
-                editor.setValue(item.data);
+                editor.dispatch({changes: {
+                    from: 0,
+                    to: editor.state.doc.length,
+                    insert: item.data
+                }})
             });
 
             buttonDiv.appendChild(copyButton);
@@ -73,12 +76,17 @@ window.electron.onClipboardUpdated((event: Event, history: Clip[]) => {
     updateHistory(history);
 });
 
-const editor = monaco.editor.create(document.getElementById('editor'), {
-	value: ''
-	// language: 'javascript'
-});
 
-// Resize the editor when window is resized
-window.addEventListener('resize', function() {
-    editor.layout();
-});
+import { minimalSetup, EditorView } from 'codemirror'
+
+const initialText = 'console.log("hello, world")'
+const targetElement = document.querySelector('#editor')!
+
+let editor = new EditorView({
+  doc: initialText,
+  extensions: [
+    minimalSetup,
+  ],
+  parent: targetElement,
+})
+
