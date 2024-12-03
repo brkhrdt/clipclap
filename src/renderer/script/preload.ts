@@ -11,5 +11,8 @@ contextBridge.exposeInMainWorld('electron', {
   },
     filterHistory: (query: string) => {
         return ipcRenderer.invoke(EVENTS.FILTER_HISTORY, query);
+    },
+    updateClip: (clip: Clip) => {
+        ipcRenderer.send(EVENTS.UPDATE_CLIP, clip);
     }
 });

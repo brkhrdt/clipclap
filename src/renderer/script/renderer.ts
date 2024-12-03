@@ -2,6 +2,8 @@ import { Clip } from '../../clip';
 
 import '../css/style.css';
 
+// Globals
+let currentClip: Clip | null = null; // clip being edited
 
 // Set up the search input listener
 const searchInput = document.getElementById('searchInput') as HTMLInputElement;
@@ -12,6 +14,16 @@ searchInput.addEventListener('input', async () => {
     const newHistory = await window.electron.filterHistory(query);  // Update search results based on input value
     console.log('new hist', newHistory);
     updateHistory(newHistory);
+});
+
+// Save button from editor back to clip
+const saveButton = document.getElementById('save-button') as HTMLInputElement;
+saveButton.addEventListener('click', async () => {
+    if (currentClip !== null) {
+        currentClip.data = editor.state.doc.toString();
+        window.electron.updateClip(currentClip);
+    }
+
 });
 
 function updateHistory(history: Clip[]): void {
@@ -51,11 +63,14 @@ function updateHistory(history: Clip[]): void {
             editButton.classList.add('edit-button');
             editButton.textContent = 'Edit';
             editButton.addEventListener('click', () => {
+                // TODO: Reset the editor undo history:
+                
+                currentClip = item;
                 editor.dispatch({changes: {
                     from: 0,
                     to: editor.state.doc.length,
                     insert: item.data
-                }})
+                }});
             });
 
             buttonDiv.appendChild(copyButton);

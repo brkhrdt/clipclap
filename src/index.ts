@@ -101,10 +101,11 @@ function setupIPC() {
     });
 
     // // Uni-directional communication: Handle logging request
-    // ipcMain.on('log-message', (event, message) => {
-    //     console.log('Log message from renderer:', message);
-    //     // Optionally, write to a file or database
-    // });
+    ipcMain.on(EVENTS.UPDATE_CLIP, (event, clip) => {
+        logger.debug('Update clip from renderer:', clip);
+        clipboardHistory.updateClip(clip);
+        updateClipboardOnRenderer();
+    });
 
     // // Periodic updates (can be either uni- or bi-directional)
     // ipcMain.handle('get-system-info', () => {

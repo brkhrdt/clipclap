@@ -6,6 +6,7 @@ declare global {
     electron: {
       onClipboardUpdated: (callback: (event: Event, history: Clip[]) => void) => void;
         filterHistory: (query: string) => Promise<Clip[]>;
+        updateClip: (clip: Clip) => void;
       // getClipboardHistory: () => Promise<string[]>;
     };
   }
