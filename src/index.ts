@@ -5,6 +5,7 @@ import EVENTS from './events';
 // import { ClipboardHistory } from './history';
 import { Clip } from './clip';
 import { filterHistory } from './search';
+import { ClipboardHistory } from './history';
 
 import { run_llm } from './llm';
 
@@ -19,8 +20,9 @@ if (require('electron-squirrel-startup')) {
   app.quit();
 }
 
-let clipboardHistory: Clip[] = [];
 const maxHistorySize = 30;
+let clipboardHistory = new ClipboardHistory(maxHistorySize);
+
 const CLIPBOARD_POLL_RATE = 1000;
 let CURRENT_FILTER_QUERY = "";
 
@@ -42,11 +44,11 @@ function createWindow() {
     // TODO: set entire history first, later just add new clips
     rendererContents = win.webContents;
     logger.info(typeof rendererContents);
-    win.webContents.send(EVENTS.CLIPBOARD_UPDATED, clipboardHistory);
+    win.webContents.send(EVENTS.CLIPBOARD_UPDATED, clipboardHistory.getClips());
 
     win.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
     logger.info('Window created and loaded.');
-    run_llm();
+    // run_llm();
 
 
     watchClipboard();
@@ -56,34 +58,38 @@ function watchClipboard() {
     let lastClipboardText = clipboard.readText();
     logger.info('Started monitoring clipboard.');
 
+    let clipCount: number = 0;
+
     setInterval(() => {
     const currentClipboardText = clipboard.readText();
 
     if (currentClipboardText && currentClipboardText !== lastClipboardText) {
+        clipCount += 1; // Used as ID
         lastClipboardText = currentClipboardText;
         logger.debug(`Clipboard contents: ${lastClipboardText}`)
 
-        const clip: Clip = {date: new Date, data: currentClipboardText};
-        clipboardHistory.unshift(clip);
-        if (clipboardHistory.length > maxHistorySize) {
-            clipboardHistory.pop();
-        }
+        const clip: Clip = {id: clipCount, date: new Date, data: currentClipboardText};
+        clipboardHistory.addClip(clip);
         logger.debug(`History: ${clipboardHistory}`);
 
         logger.info('Clipboard updated: ', { text: currentClipboardText });
-        if (rendererContents) {
-            if (CURRENT_FILTER_QUERY != "") {
-                logger.debug(`New clipboard entry while filter is active: ${CURRENT_FILTER_QUERY}`);
-                filterHistory(CURRENT_FILTER_QUERY, clipboardHistory).then(
-                    (filteredHistory) => {
-                        rendererContents.send(EVENTS.CLIPBOARD_UPDATED, filteredHistory);
-                    });
-            } else {
-                rendererContents.send(EVENTS.CLIPBOARD_UPDATED, clipboardHistory);
-            }
-        }
+        updateClipboardOnRenderer();
     }
     }, CLIPBOARD_POLL_RATE);
+}
+
+function updateClipboardOnRenderer() {
+    if (rendererContents) {
+        if (CURRENT_FILTER_QUERY != "") {
+            logger.debug(`New clipboard entry while filter is active: ${CURRENT_FILTER_QUERY}`);
+            filterHistory(CURRENT_FILTER_QUERY, clipboardHistory.getClips()).then(
+                (filteredHistory) => {
+                    rendererContents.send(EVENTS.CLIPBOARD_UPDATED, filteredHistory);
+                });
+        } else {
+            rendererContents.send(EVENTS.CLIPBOARD_UPDATED, clipboardHistory.getClips());
+        }
+    }
 }
 
 function setupIPC() {
@@ -91,7 +97,7 @@ function setupIPC() {
     ipcMain.handle(EVENTS.FILTER_HISTORY, async (event, query) => {
         CURRENT_FILTER_QUERY = query;
         logger.debug(`${event} ${query}`);
-        return await filterHistory(query, clipboardHistory);
+        return await filterHistory(query, clipboardHistory.getClips());
     });
 
     // // Uni-directional communication: Handle logging request
