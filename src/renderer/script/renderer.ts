@@ -107,10 +107,10 @@ window.electron.onClipboardUpdated((event: Event, history: Clip[]) => {
 });
 
 
-import { basicSetup, EditorView } from 'codemirror'
+import { basicSetup, EditorView } from 'codemirror';
 
-const initialText = 'console.log("hello, world")'
-const targetElement = document.querySelector('#editor')!
+const initialText = '';
+const targetElement = document.querySelector('#editor')!;
 
 let editor = new EditorView({
   doc: initialText,
@@ -118,5 +118,5 @@ let editor = new EditorView({
     basicSetup,
   ],
   parent: targetElement,
-})
+});
 
