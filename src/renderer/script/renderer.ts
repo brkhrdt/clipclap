@@ -41,6 +41,44 @@ saveButton.addEventListener('click', async () => {
 
 });
 
+// Drag bar to resize clipboard history and editor columns
+const resizeBar = document.querySelector('.column-resize-bar') as HTMLElement;
+const leftColumn = document.querySelector('.column-left') as HTMLElement;
+const rightColumn = document.querySelector('.column-right') as HTMLElement;
+const container = document.querySelector('.container') as HTMLElement;
+
+let isResizing: boolean = false;
+let lastDownX: number = 0;
+
+// Mouse down event to start resizing
+resizeBar.addEventListener('mousedown', (e: MouseEvent): void => {
+    isResizing = true;
+    lastDownX = e.clientX;
+    document.body.style.userSelect = 'none';  // Disable text selection during drag
+});
+
+// Mouse move event to resize columns
+document.addEventListener('mousemove', (e: MouseEvent): void => {
+    if (!isResizing) return;
+
+    const offsetRight: number = container.offsetWidth - (e.clientX - container.offsetLeft);
+    const newLeftWidth: number = e.clientX - container.offsetLeft;
+
+    // Ensure the columns have a minimum width
+    const minWidth: number = 100;
+    if (newLeftWidth >= minWidth && offsetRight >= minWidth) {
+        leftColumn.style.width = `${newLeftWidth}px`;
+        rightColumn.style.width = `${container.offsetWidth - newLeftWidth - resizeBar.offsetWidth}px`;
+    }
+});
+
+// Mouse up event to stop resizing
+document.addEventListener('mouseup', (): void => {
+    isResizing = false;
+    document.body.style.userSelect = 'auto';  // Re-enable text selection
+});
+
+
 function updateHistory(history: Clip[]): void {
     const historyElement = document.getElementById('history');
     
