@@ -7,6 +7,7 @@ let currentClip: Clip | null = null; // clip being edited
 
 // Set up the search input listener
 const searchInput = document.getElementById('searchInput') as HTMLInputElement;
+const promptInput = document.getElementById('promptInput') as HTMLInputElement;
 
 // Listen for changes in the search input field
 searchInput.addEventListener('input', async () => {
@@ -14,6 +15,20 @@ searchInput.addEventListener('input', async () => {
     const newHistory = await window.electron.filterHistory(query);  // Update search results based on input value
     console.log('new hist', newHistory);
     updateHistory(newHistory);
+});
+
+// Listen for changes in the prompt input field
+promptInput.addEventListener('keyup', async ({key}) => {
+    if (key === 'Enter') {
+        const prompt = promptInput.value;
+        const newDoc = await window.electron.promptLLM(prompt, editor.state.doc.toString());
+        console.log('new doc from llm', newDoc);
+        editor.dispatch({changes: {
+            from: 0,
+            to: editor.state.doc.length,
+            insert: newDoc
+        }});
+    }
 });
 
 // Save button from editor back to clip

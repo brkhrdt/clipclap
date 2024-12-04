@@ -14,5 +14,8 @@ contextBridge.exposeInMainWorld('electron', {
     },
     updateClip: (clip: Clip) => {
         ipcRenderer.send(EVENTS.UPDATE_CLIP, clip);
+    },
+    promptLLM: (prompt: string, context: string) => {
+        return ipcRenderer.invoke(EVENTS.PROMPT_LLM, prompt, context);
     }
 });
