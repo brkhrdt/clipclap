@@ -75,21 +75,20 @@ body {
 /*     padding: 5px; */
 /*     box-sizing: border-box; */
 /* } */
-.left-column,
-.right-column {
-    padding: 20px;
+.column-left,
+.column-right {
+    padding: 5px;
     height: 100%;
 }
 
-.left-column {
+.column-left {
     background-color: #f0f0f0;
     overflow-y: auto;  /* Allow vertical scrolling if content exceeds the height */
     flex-grow: 1;
 }
 
-.right-column {
+.column-right {
     background-color: #e0e0e0;
-    overflow: auto;
     flex-grow: 1;
 }
 
