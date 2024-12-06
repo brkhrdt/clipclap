@@ -84,12 +84,12 @@ body {
 .column-left {
     background-color: #f0f0f0;
     overflow-y: auto;  /* Allow vertical scrolling if content exceeds the height */
-    flex-grow: 1;
+    width:50%;
 }
 
 .column-right {
     background-color: #e0e0e0;
-    flex-grow: 1;
+    width: 50%;
 }
 
 .column-resize-bar {
