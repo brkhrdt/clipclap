@@ -56,6 +56,7 @@
   background-color: #45a049;
 }
 
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -102,6 +103,20 @@ body {
 
 .resize-bar:hover {
     background-color: #555;
+}
+
+.column-controls {
+    display: flex;
+    padding-bottom: 5px;
+    height: 5%;
+}
+#searchInput {
+    flex: 1;
+}
+
+#promptInput {
+    flex: 2;
+    margin-right: 5px; /* Space between items */
 }
 
 #editor {
