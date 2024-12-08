@@ -112,22 +112,22 @@ function updateHistory(history: Clip[]): void {
                         console.error('Error copying text: ', err);
                     });
             });
-            const editButton = document.createElement('button');
-            editButton.classList.add('edit-button');
-            editButton.textContent = 'Edit';
-            editButton.addEventListener('click', () => {
+            const addButton = document.createElement('button');
+            addButton.classList.add('add-button');
+            addButton.textContent = '+';
+            addButton.addEventListener('click', () => {
                 // TODO: Reset the editor undo history:
                 
                 currentClip = item;
                 editor.dispatch({changes: {
-                    from: 0,
+                    from: editor.state.doc.length,
                     to: editor.state.doc.length,
                     insert: item.data
                 }});
             });
 
             buttonDiv.appendChild(copyButton);
-            buttonDiv.appendChild(editButton);
+            buttonDiv.appendChild(addButton);
 
             itemDiv.appendChild(textDiv);
             itemDiv.appendChild(dateDiv);
