@@ -92,6 +92,9 @@ body {
 .column-right {
     background-color: #e0e0e0;
     width: 50%;
+    height: 100vh; /* Make container take full height of the screen */
+    display: flex;
+    flex-direction: column;
 }
 
 .column-resize-bar {
@@ -121,7 +124,14 @@ body {
 }
 
 #editor {
-    height: 100%; /* TODO fill down after prompting text box */
+  flex-grow: 1;
+  overflow: hidden;
+  position: relative;
+}
+.cm-editor {
+  height: 100%;
+  overflow-x: auto;
+  padding-bottom: 10px;
 }
 
 /* .content { */
