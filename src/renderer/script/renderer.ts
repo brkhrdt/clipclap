@@ -88,6 +88,9 @@ function updateHistory(history: Clip[]): void {
         history.forEach((item: Clip) => {
             const itemDiv = document.createElement('div');
             itemDiv.classList.add('history-item');
+
+            const contentDiv = document.createElement('div');
+            contentDiv.classList.add('history-content');
             
             const textDiv = document.createElement('div');
             textDiv.classList.add('history-text');
@@ -98,11 +101,12 @@ function updateHistory(history: Clip[]): void {
             dateDiv.textContent = item.date.toLocaleString();
 
             const buttonDiv = document.createElement('div');
-            buttonDiv.classList.add('button-container');
+            buttonDiv.classList.add('history-item-button-container');
             
             const copyButton = document.createElement('button');
+            copyButton.classList.add('history-item-button');
             copyButton.classList.add('copy-button');
-            copyButton.textContent = 'Copy';
+            copyButton.textContent = '⧉';
             copyButton.addEventListener('click', () => {
                 navigator.clipboard.writeText(item.data)
                     .then(() => {
@@ -113,6 +117,7 @@ function updateHistory(history: Clip[]): void {
                     });
             });
             const addButton = document.createElement('button');
+            addButton.classList.add('history-item-button');
             addButton.classList.add('add-button');
             addButton.textContent = '+';
             addButton.addEventListener('click', () => {
@@ -129,8 +134,10 @@ function updateHistory(history: Clip[]): void {
             buttonDiv.appendChild(copyButton);
             buttonDiv.appendChild(addButton);
 
-            itemDiv.appendChild(textDiv);
-            itemDiv.appendChild(dateDiv);
+            contentDiv.appendChild(textDiv);
+            contentDiv.appendChild(dateDiv);
+
+            itemDiv.appendChild(contentDiv);
             itemDiv.appendChild(buttonDiv);
 
             historyElement.appendChild(itemDiv);

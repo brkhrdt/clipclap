@@ -5,10 +5,22 @@
   background-color: #f9f9f9;
   border: 1px solid #ddd;
   /* border-radius: 5px; */
+  display: flex;
+  width: 100%;
+}
+
+.history-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: space-between;
+  margin-left: auto;
 }
 
 .history-text {
   /* display: inline-block; */
+  min-height: 2em;
+  line-height: 1em;
   white-space: pre-wrap;
   max-width: calc(100% - 60px); /* Ensure the text doesn't overlap the button */
 }
@@ -19,40 +31,29 @@
   color: grey; /* Grey color for less emphasis */
 }
 
-.button-container {
-  position: absolute;
-  top: 5px; /* Align the wrapper at the top */
-  right: 5px; /* Align the wrapper to the right */
+.history-item-button-container {
   display: flex;
-  flex-direction: row-reverse; /* Stack the buttons vertically */
-  gap: 5px; /* Space between buttons */
+  flex-direction: column;
+  justify-content: space-between;
+  margin-left: auto;
 }
 
-.copy-button {
-  padding: 5px 10px;
-  font-size: 14px;
-  background-color: #4CAF50;
+.history-item-button {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  background-color: rgba(0, 0, 0, 0.1);
   color: white;
   border: none;
   border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
   cursor: pointer;
 }
 
-.copy-button:hover {
-  background-color: #45a049;
-}
-
-.add-button {
-  padding: 5px 10px;
-  font-size: 14px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.add-button:hover {
+.history-item-button:hover {
   background-color: #45a049;
 }
 
