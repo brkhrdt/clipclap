@@ -1,3 +1,7 @@
+* {
+    box-sizing: border-box;
+}
+
 .history-item {
   position: relative; /* Enables absolute positioning for the button */
   margin-bottom: 5px; /* Space between items */
@@ -131,7 +135,7 @@ body {
 .cm-editor {
   height: 100%;
   overflow-x: auto;
-  padding-bottom: 10px;
+  /* padding-bottom: 10px; */
 }
 
 /* .content { */
