@@ -4,6 +4,6 @@ type Clip = {
     id: ClipId;
     date: Date;
     data: ClipData;
-}
+};
 
 export { Clip, ClipData };

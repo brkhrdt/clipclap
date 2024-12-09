@@ -12,22 +12,27 @@ const promptInput = document.getElementById('promptInput') as HTMLInputElement;
 // Listen for changes in the search input field
 searchInput.addEventListener('input', async () => {
     const query = searchInput.value;
-    const newHistory = await window.electron.filterHistory(query);  // Update search results based on input value
+    const newHistory = await window.electron.filterHistory(query); // Update search results based on input value
     console.log('new hist', newHistory);
     updateHistory(newHistory);
 });
 
 // Listen for changes in the prompt input field
-promptInput.addEventListener('keyup', async ({key}) => {
+promptInput.addEventListener('keyup', async ({ key }) => {
     if (key === 'Enter') {
         const prompt = promptInput.value;
-        const newDoc = await window.electron.promptLLM(prompt, editor.state.doc.toString());
+        const newDoc = await window.electron.promptLLM(
+            prompt,
+            editor.state.doc.toString()
+        );
         console.log('new doc from llm', newDoc);
-        editor.dispatch({changes: {
-            from: 0,
-            to: editor.state.doc.length,
-            insert: newDoc
-        }});
+        editor.dispatch({
+            changes: {
+                from: 0,
+                to: editor.state.doc.length,
+                insert: newDoc,
+            },
+        });
     }
 });
 
@@ -38,7 +43,6 @@ saveButton.addEventListener('click', async () => {
         currentClip.data = editor.state.doc.toString();
         window.electron.updateClip(currentClip);
     }
-
 });
 
 // Drag bar to resize clipboard history and editor columns
@@ -54,14 +58,15 @@ let lastDownX: number = 0;
 resizeBar.addEventListener('mousedown', (e: MouseEvent): void => {
     isResizing = true;
     lastDownX = e.clientX;
-    document.body.style.userSelect = 'none';  // Disable text selection during drag
+    document.body.style.userSelect = 'none'; // Disable text selection during drag
 });
 
 // Mouse move event to resize columns
 document.addEventListener('mousemove', (e: MouseEvent): void => {
     if (!isResizing) return;
 
-    const offsetRight: number = container.offsetWidth - (e.clientX - container.offsetLeft);
+    const offsetRight: number =
+        container.offsetWidth - (e.clientX - container.offsetLeft);
     const newLeftWidth: number = e.clientX - container.offsetLeft;
 
     // Ensure the columns have a minimum width
@@ -75,13 +80,12 @@ document.addEventListener('mousemove', (e: MouseEvent): void => {
 // Mouse up event to stop resizing
 document.addEventListener('mouseup', (): void => {
     isResizing = false;
-    document.body.style.userSelect = 'auto';  // Re-enable text selection
+    document.body.style.userSelect = 'auto'; // Re-enable text selection
 });
-
 
 function updateHistory(history: Clip[]): void {
     const historyElement = document.getElementById('history');
-    
+
     if (historyElement) {
         historyElement.innerHTML = '';
 
@@ -91,7 +95,7 @@ function updateHistory(history: Clip[]): void {
 
             const contentDiv = document.createElement('div');
             contentDiv.classList.add('history-content');
-            
+
             const textDiv = document.createElement('div');
             textDiv.classList.add('history-text');
             textDiv.textContent = item.data;
@@ -102,13 +106,14 @@ function updateHistory(history: Clip[]): void {
 
             const buttonDiv = document.createElement('div');
             buttonDiv.classList.add('history-item-button-container');
-            
+
             const copyButton = document.createElement('button');
             copyButton.classList.add('history-item-button');
             copyButton.classList.add('copy-button');
             copyButton.textContent = '⧉';
             copyButton.addEventListener('click', () => {
-                navigator.clipboard.writeText(item.data)
+                navigator.clipboard
+                    .writeText(item.data)
                     .then(() => {
                         console.log('Text copied to clipboard');
                     })
@@ -122,13 +127,15 @@ function updateHistory(history: Clip[]): void {
             addButton.textContent = '+';
             addButton.addEventListener('click', () => {
                 // TODO: Reset the editor undo history:
-                
+
                 currentClip = item;
-                editor.dispatch({changes: {
-                    from: editor.state.doc.length,
-                    to: editor.state.doc.length,
-                    insert: item.data
-                }});
+                editor.dispatch({
+                    changes: {
+                        from: editor.state.doc.length,
+                        to: editor.state.doc.length,
+                        insert: item.data,
+                    },
+                });
             });
 
             buttonDiv.appendChild(copyButton);
@@ -151,17 +158,13 @@ window.electron.onClipboardUpdated((event: Event, history: Clip[]) => {
     updateHistory(history);
 });
 
-
 import { basicSetup, EditorView } from 'codemirror';
 
 const initialText = '';
 const targetElement = document.querySelector('#editor')!;
 
 let editor = new EditorView({
-  doc: initialText,
-  extensions: [
-    basicSetup,
-  ],
-  parent: targetElement,
+    doc: initialText,
+    extensions: [basicSetup],
+    parent: targetElement,
 });
-

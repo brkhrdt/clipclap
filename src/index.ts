@@ -17,14 +17,14 @@ declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
-  app.quit();
+    app.quit();
 }
 
 const maxHistorySize = 30;
 let clipboardHistory = new ClipboardHistory(maxHistorySize);
 
 const CLIPBOARD_POLL_RATE = 1000;
-let CURRENT_FILTER_QUERY = "";
+let CURRENT_FILTER_QUERY = '';
 
 const APP_DIR = app.getAppPath();
 
@@ -32,13 +32,13 @@ let rendererContents: WebContents | null = null;
 
 function createWindow() {
     const win = new BrowserWindow({
-    width: 800,
-    height: 600,
-    webPreferences: {
-        // nodeIntegration: true, // needed otherwise preload.js fails to require events
-        // contextIsolation: false,
-        preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
-    },
+        width: 800,
+        height: 600,
+        webPreferences: {
+            // nodeIntegration: true, // needed otherwise preload.js fails to require events
+            // contextIsolation: false,
+            preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
+        },
     });
 
     // TODO: set entire history first, later just add new clips
@@ -50,7 +50,6 @@ function createWindow() {
     logger.info('Window created and loaded.');
     // run_llm();
 
-
     watchClipboard();
 }
 
@@ -61,33 +60,48 @@ function watchClipboard() {
     let clipCount: number = 0;
 
     setInterval(() => {
-    const currentClipboardText = clipboard.readText();
+        const currentClipboardText = clipboard.readText();
 
-    if (currentClipboardText && currentClipboardText !== lastClipboardText) {
-        clipCount += 1; // Used as ID
-        lastClipboardText = currentClipboardText;
-        logger.debug(`Clipboard contents: ${lastClipboardText}`)
+        if (
+            currentClipboardText &&
+            currentClipboardText !== lastClipboardText
+        ) {
+            clipCount += 1; // Used as ID
+            lastClipboardText = currentClipboardText;
+            logger.debug(`Clipboard contents: ${lastClipboardText}`);
 
-        const clip: Clip = {id: clipCount, date: new Date, data: currentClipboardText};
-        clipboardHistory.addClip(clip);
-        logger.debug(`History: ${clipboardHistory}`);
+            const clip: Clip = {
+                id: clipCount,
+                date: new Date(),
+                data: currentClipboardText,
+            };
+            clipboardHistory.addClip(clip);
+            logger.debug(`History: ${clipboardHistory}`);
 
-        logger.info('Clipboard updated: ', { text: currentClipboardText });
-        updateClipboardOnRenderer();
-    }
+            logger.info('Clipboard updated: ', { text: currentClipboardText });
+            updateClipboardOnRenderer();
+        }
     }, CLIPBOARD_POLL_RATE);
 }
 
 function updateClipboardOnRenderer() {
     if (rendererContents) {
-        if (CURRENT_FILTER_QUERY != "") {
+        if (CURRENT_FILTER_QUERY != '') {
             logger.debug(`Active filter: ${CURRENT_FILTER_QUERY}`);
-            filterHistory(CURRENT_FILTER_QUERY, clipboardHistory.getClips()).then(
-                (filteredHistory) => {
-                    rendererContents.send(EVENTS.CLIPBOARD_UPDATED, filteredHistory);
-                });
+            filterHistory(
+                CURRENT_FILTER_QUERY,
+                clipboardHistory.getClips()
+            ).then((filteredHistory) => {
+                rendererContents.send(
+                    EVENTS.CLIPBOARD_UPDATED,
+                    filteredHistory
+                );
+            });
         } else {
-            rendererContents.send(EVENTS.CLIPBOARD_UPDATED, clipboardHistory.getClips());
+            rendererContents.send(
+                EVENTS.CLIPBOARD_UPDATED,
+                clipboardHistory.getClips()
+            );
         }
     }
 }
@@ -101,6 +115,7 @@ function setupIPC() {
         const systemprompt = `You are an expert assistant and will be given some text to modify based on the user\'s request. Only modify the given text. Be concise and do not give any information that is not asked for.\n\nHere is the text:\n${text}`;
 
         const llm = new LLM(baseurl, apikey, systemprompt);
+        // TODO handle failed connection
         return await llm.runLLM(prompt);
     });
 
@@ -136,17 +151,17 @@ app.whenReady().then(() => {
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
+    if (process.platform !== 'darwin') {
+        app.quit();
+    }
 });
 
 app.on('activate', () => {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow();
-  }
+    // On OS X it's common to re-create a window in the app when the
+    // dock icon is clicked and there are no other windows open.
+    if (BrowserWindow.getAllWindows().length === 0) {
+        createWindow();
+    }
 });
 
 // In this file you can include the rest of your app's specific main process

@@ -13,7 +13,7 @@ class ClipboardHistory {
         if (this.clipboard.size >= this.maxHistorySize) {
             this.dropOldestClip();
         }
-        
+
         this.clipboard.set(clip.id, clip);
     }
 

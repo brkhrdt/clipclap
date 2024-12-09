@@ -15,12 +15,12 @@ class LLM {
             messages: [
                 {
                     role: 'system',
-                    content: this.systemPrompt
+                    content: this.systemPrompt,
                 },
                 {
                     role: 'user',
-                    content: userPrompt
-                }
+                    content: userPrompt,
+                },
             ],
         });
 

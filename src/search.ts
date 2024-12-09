@@ -5,7 +5,7 @@ import logger from './logger'; // Import the logger
 
 const options: IFuseOptions<Clip> = {
     keys: ['data'],
-    useExtendedSearch: true
+    useExtendedSearch: true,
 };
 
 // Function to update the search results
@@ -22,7 +22,7 @@ async function filterHistory(query: string, history: Clip[]): Promise<Clip[]> {
     // Process results here (e.g., update the DOM or data binding)
     logger.debug(`Search Results: ${JSON.stringify(results)}`); // For example, logging results to the console
 
-    const clips = results.map(x => x.item);
+    const clips = results.map((x) => x.item);
 
     return clips;
 }
