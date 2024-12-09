@@ -10,7 +10,7 @@
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "lint": "eslint --ext .ts,.tsx .",
-    "format": "npx prettier --write \"src/**/*.{js,jsx,ts,tsx}\""
+    "format": "npx prettier --write \"src/**/*.{js,jsx,ts,tsx,css}\""
   },
   "devDependencies": {
     "@electron-forge/cli": "^7.5.0",
