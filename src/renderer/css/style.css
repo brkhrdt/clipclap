@@ -117,7 +117,7 @@ body {
 .column-controls {
     display: flex;
     padding-bottom: 5px;
-    height: 5%;
+    /* height: 5%; */
 }
 #searchInput {
     flex: 1;
