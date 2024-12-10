@@ -126,6 +126,8 @@ body {
 #promptInput {
     flex: 2;
     margin-right: 5px; /* Space between items */
+    resize: none;  /* Allow resizing vertically */
+    overflow: hidden;
 }
 
 #editor {

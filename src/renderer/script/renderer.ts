@@ -45,6 +45,22 @@ saveButton.addEventListener('click', async () => {
     }
 });
 
+
+//
+// Prompt input
+//
+// Prompt text field, expand as text is entered
+const textarea = document.querySelector('#promptInput') as HTMLInputElement;
+function resizeTextarea() {
+  textarea.style.height = 'auto';
+  textarea.style.height = textarea.scrollHeight + 'px';
+}
+textarea.addEventListener('input', resizeTextarea);
+resizeTextarea();
+
+//
+// Drag divider bar
+//
 // Drag bar to resize clipboard history and editor columns
 const resizeBar = document.querySelector('.column-resize-bar') as HTMLElement;
 const leftColumn = document.querySelector('.column-left') as HTMLElement;
