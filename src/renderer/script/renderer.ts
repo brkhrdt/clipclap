@@ -1,3 +1,7 @@
+import { basicSetup, minimalSetup, EditorView } from 'codemirror';
+// import {EditorState, Compartment} from "@codemirror/state"
+import { highlightWhitespace } from "@codemirror/view"
+
 import { Clip } from '../../clip';
 
 import '../css/style.css';
@@ -114,7 +118,18 @@ function updateHistory(history: Clip[]): void {
 
             const textDiv = document.createElement('div');
             textDiv.classList.add('history-text');
-            textDiv.textContent = item.data;
+            // textDiv.textContent = item.data;
+            // let hlWs = new Compartment;
+            let textBox = new EditorView({
+                doc: item.data,
+                extensions: [
+                    minimalSetup,                   // Enable basic editing features
+                    // highlightWhitespace(),
+                    EditorView.lineWrapping,
+                    EditorView.editable.of(false)
+                ],
+                parent: textDiv,
+            });
 
             const dateDiv = document.createElement('div');
             dateDiv.classList.add('history-date');
@@ -174,13 +189,15 @@ window.electron.onClipboardUpdated((event: Event, history: Clip[]) => {
     updateHistory(history);
 });
 
-import { basicSetup, EditorView } from 'codemirror';
 
 const initialText = '';
 const targetElement = document.querySelector('#editor')!;
 
 let editor = new EditorView({
     doc: initialText,
-    extensions: [basicSetup],
+    extensions: [
+        basicSetup,
+        EditorView.lineWrapping
+    ],
     parent: targetElement,
 });

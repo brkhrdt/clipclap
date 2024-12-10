@@ -19,17 +19,14 @@
     width: 100%;
     justify-content: space-between;
     margin-left: auto;
+    user-select: none;
 }
 
 .history-text {
-    /* display: inline-block; */
     min-height: 2em;
     line-height: 1em;
-    white-space: pre-wrap;
-    max-width: calc(
-        100% - 60px
-    ); /* Ensure the text doesn't overlap the button */
 }
+
 .history-date {
     /* display: inline-block; */
     max-width: calc(100% - 60px);
