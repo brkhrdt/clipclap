@@ -22,8 +22,8 @@ searchInput.addEventListener('input', async () => {
 });
 
 // Listen for changes in the prompt input field
-promptInput.addEventListener('keyup', async ({ key }) => {
-    if (key === 'Enter') {
+promptInput.addEventListener('keyup', async (event) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
         const prompt = promptInput.value;
         const newDoc = await window.electron.promptLLM(
             prompt,
@@ -37,6 +37,13 @@ promptInput.addEventListener('keyup', async ({ key }) => {
                 insert: newDoc,
             },
         });
+    }
+});
+
+// Disable 'Enter' key from creating a newline
+promptInput.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
     }
 });
 
