@@ -1,11 +1,14 @@
 import { app, BrowserWindow, clipboard, ipcMain } from 'electron';
 import { WebContents } from 'electron';
+import { PathLike, existsSync } from 'fs';
+
 import logger from './logger'; // Import the logger
 import EVENTS from './events';
 // import { ClipboardHistory } from './history';
 import { Clip } from './clip';
 import { filterHistory } from './search';
 import { ClipboardHistory } from './history';
+import { readConfig } from './settings';
 
 import LLM from './llm';
 
@@ -44,6 +47,13 @@ function createWindow() {
     // TODO: set entire history first, later just add new clips
     rendererContents = win.webContents;
     logger.info(typeof rendererContents);
+
+    const configFile = getConfigFile();
+    const config = readConfig(configFile);
+    logger.debug(`Config: ${config}`);
+    logger.debug(JSON.stringify(config));
+    win.webContents.send(EVENTS.LOAD_CONFIG, config);
+
     win.webContents.send(EVENTS.CLIPBOARD_UPDATED, clipboardHistory.getClips());
 
     win.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
@@ -136,6 +146,27 @@ function setupIPC() {
     // ipcMain.handle('get-system-info', () => {
     //     return { cpu: 'Intel', ram: '16GB' };
     // });
+}
+
+function getUserDir(): PathLike | null {
+    // Return the directory to configure the app depending on platform
+    const appUserDir = app.getPath('userData');
+    logger.debug(`User dir is ${appUserDir}`);
+
+    return existsSync(appUserDir) ? appUserDir : null;
+}
+
+function getConfigFile(): PathLike | null {
+    const appConfigDir = getUserDir();
+    const appConfigFile = appConfigDir ? `${appConfigDir}/config.json` : null;
+
+    if (appConfigFile && existsSync(appConfigFile)) {
+        logger.debug(`Config dir is ${appConfigDir}`);
+        return appConfigFile;
+    }
+    
+    logger.debug(`Config file does not exist ${appConfigFile}`);
+    return null;
 }
 
 // This method will be called when Electron has finished

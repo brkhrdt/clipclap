@@ -3,11 +3,13 @@ import { basicSetup, minimalSetup, EditorView } from 'codemirror';
 import { highlightWhitespace } from "@codemirror/view"
 
 import { Clip } from '../../clip';
+import { Configuration } from '../../settings';
 
 import '../css/style.css';
 
 // Globals
 let currentClip: Clip | null = null; // clip being edited
+let CONFIG: Configuration = null;
 
 // Set up the search input listener
 const searchInput = document.getElementById('searchInput') as HTMLInputElement;
@@ -110,6 +112,10 @@ document.addEventListener('mouseup', (): void => {
     document.body.style.userSelect = 'auto'; // Re-enable text selection
 });
 
+
+//
+// Clipboard
+//
 function updateHistory(history: Clip[]): void {
     const historyElement = document.getElementById('history');
 
@@ -196,6 +202,13 @@ window.electron.onClipboardUpdated((event: Event, history: Clip[]) => {
     updateHistory(history);
 });
 
+function loadConfig(config: Configuration): void {
+    CONFIG = config; // set global
+}
+
+window.electron.onLoadConfig((event: Event, config: Configuration) => {
+    loadConfig(config);
+});
 
 const initialText = '';
 const targetElement = document.querySelector('#editor')!;
