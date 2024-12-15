@@ -1,6 +1,6 @@
 import { basicSetup, minimalSetup, EditorView } from 'codemirror';
 // import {EditorState, Compartment} from "@codemirror/state"
-import { highlightWhitespace } from "@codemirror/view"
+import { highlightWhitespace } from '@codemirror/view';
 
 import { Clip } from '../../clip';
 import { Configuration } from '../../settings';
@@ -43,7 +43,7 @@ promptInput.addEventListener('keyup', async (event) => {
 });
 
 // Disable 'Enter' key from creating a newline
-promptInput.addEventListener('keydown', function(event) {
+promptInput.addEventListener('keydown', function (event) {
     if (event.key === 'Enter' && !event.shiftKey) {
         event.preventDefault();
     }
@@ -58,15 +58,14 @@ saveButton.addEventListener('click', async () => {
     }
 });
 
-
 //
 // Prompt input
 //
 // Prompt text field, expand as text is entered
 const textarea = document.querySelector('#promptInput') as HTMLInputElement;
 function resizeTextarea() {
-  textarea.style.height = 'auto';
-  textarea.style.height = textarea.scrollHeight + 'px';
+    textarea.style.height = 'auto';
+    textarea.style.height = textarea.scrollHeight + 'px';
 }
 textarea.addEventListener('input', resizeTextarea);
 resizeTextarea();
@@ -112,7 +111,6 @@ document.addEventListener('mouseup', (): void => {
     document.body.style.userSelect = 'auto'; // Re-enable text selection
 });
 
-
 //
 // Clipboard
 //
@@ -136,10 +134,10 @@ function updateHistory(history: Clip[]): void {
             let textBox = new EditorView({
                 doc: item.data,
                 extensions: [
-                    minimalSetup,                   // Enable basic editing features
+                    minimalSetup, // Enable basic editing features
                     // highlightWhitespace(),
                     EditorView.lineWrapping,
-                    EditorView.editable.of(false)
+                    EditorView.editable.of(false),
                 ],
                 parent: textDiv,
             });
@@ -215,9 +213,6 @@ const targetElement = document.querySelector('#editor')!;
 
 let editor = new EditorView({
     doc: initialText,
-    extensions: [
-        basicSetup,
-        EditorView.lineWrapping
-    ],
+    extensions: [basicSetup, EditorView.lineWrapping],
     parent: targetElement,
 });
