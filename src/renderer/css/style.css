@@ -122,6 +122,7 @@ body {
 
 #promptInput {
     flex: 2;
+    flex-direction: row;
     margin-right: 5px; /* Space between items */
     resize: none;  /* Allow resizing vertically */
     overflow: hidden;
