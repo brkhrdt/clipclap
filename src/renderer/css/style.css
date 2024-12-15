@@ -1,3 +1,21 @@
+:root {
+    color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        /* background: #333; */
+        color: white;
+    }
+}
+
+@media (prefers-color-scheme: light) {
+    body {
+        background: #ddd;
+        color: black;
+    }
+}
+
 * {
     box-sizing: border-box;
 }
@@ -6,7 +24,7 @@
     position: relative; /* Enables absolute positioning for the button */
     margin-bottom: 5px; /* Space between items */
     padding: 5px;
-    background-color: #f9f9f9;
+/*     background-color: #f9f9f9; */
     border: 1px solid #ddd;
     /* border-radius: 5px; */
     display: flex;
@@ -45,7 +63,7 @@
     font-size: 20px;
     width: 20px;
     height: 20px;
-    background-color: rgba(0, 0, 0, 0.1);
+/*     background-color: rgba(0, 0, 0, 0.1); */
     color: white;
     border: none;
     border-radius: 5px;
@@ -57,7 +75,7 @@
 }
 
 .history-item-button:hover {
-    background-color: #45a049;
+/*     background-color: #45a049; */
 }
 
 body {
@@ -86,13 +104,13 @@ body {
 }
 
 .column-left {
-    background-color: #f0f0f0;
+/*     background-color: #f0f0f0; */
     overflow-y: auto; /* Allow vertical scrolling if content exceeds the height */
     width: 50%;
 }
 
 .column-right {
-    background-color: #e0e0e0;
+/*     background-color: #e0e0e0; */
     width: 50%;
     height: 100vh; /* Make container take full height of the screen */
     display: flex;
@@ -101,14 +119,14 @@ body {
 
 .column-resize-bar {
     cursor: ew-resize;
-    background-color: #888;
+/*     background-color: #888; */
     width: 2px;
     height: 100%;
     transition: background-color 0.3s;
 }
 
 .resize-bar:hover {
-    background-color: #555;
+/*     background-color: #555; */
 }
 
 .column-controls {
@@ -124,7 +142,7 @@ body {
     flex: 2;
     flex-direction: row;
     margin-right: 5px; /* Space between items */
-    resize: none;  /* Allow resizing vertically */
+    resize: none; /* Allow resizing vertically */
     overflow: hidden;
 }
 

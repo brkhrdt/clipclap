@@ -1,4 +1,4 @@
-import { app, BrowserWindow, clipboard, ipcMain } from 'electron';
+import { app, BrowserWindow, clipboard, ipcMain, nativeTheme } from 'electron';
 import { WebContents } from 'electron';
 import { PathLike, existsSync } from 'fs';
 
@@ -50,6 +50,8 @@ function createWindow() {
 
     const configFile = getConfigFile();
     const config = readConfig(configFile);
+
+    nativeTheme.themeSource = config.theme;
     logger.debug(`Config: ${config}`);
     logger.debug(JSON.stringify(config));
     win.webContents.send(EVENTS.LOAD_CONFIG, config);
@@ -164,7 +166,7 @@ function getConfigFile(): PathLike | null {
         logger.debug(`Config dir is ${appConfigDir}`);
         return appConfigFile;
     }
-    
+
     logger.debug(`Config file does not exist ${appConfigFile}`);
     return null;
 }
