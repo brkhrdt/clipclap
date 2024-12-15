@@ -7,6 +7,9 @@
         /* background: #333; */
         color: white;
     }
+    .cm-gutter {
+        background: #111;
+    }
 }
 
 @media (prefers-color-scheme: light) {
@@ -156,6 +159,7 @@ body {
     overflow-x: auto;
     /* padding-bottom: 10px; */
 }
+
 
 /* .content { */
 /*     background-color: #fff; */
