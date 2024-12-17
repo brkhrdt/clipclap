@@ -1,5 +1,5 @@
-import { app, BrowserWindow, clipboard, ipcMain, nativeTheme } from 'electron';
-import { WebContents } from 'electron';
+import { app, BrowserWindow, clipboard, ipcMain, nativeTheme, Menu, MenuItemConstructorOptions } from 'electron';
+import { WebContents, MenuItem } from 'electron';
 import { PathLike, existsSync } from 'fs';
 
 import logger from './logger'; // Import the logger
@@ -62,8 +62,112 @@ function createWindow() {
     logger.info('Window created and loaded.');
     // run_llm();
 
+    // Create a custom menu
+    const menuTemplate: Electron.MenuItemConstructorOptions[] = [
+        {
+            label: 'Menu Item 1',
+            click: () => { logger.info('clicked')}
+        },
+        { type: 'separator' },
+        {
+            label: 'View',
+            submenu: [
+                { role: 'reload' },
+                { role: 'forceReload' },
+                { role: 'toggleDevTools' },
+                { type: 'separator' },
+                { role: 'resetZoom' },
+                { role: 'zoomIn' },
+                { role: 'zoomOut' },
+            ]
+        },
+        { type: 'separator' },
+        {
+            label: 'Editor',
+            submenu: [
+                {
+                    label: 'Line wrap',
+                    type: 'checkbox',
+                    checked: config.lineWrap
+                    click: () => {
+                        config.lineWrap = config.lineWrap ? false : true;
+                        win.webContents.send(EVENTS.LOAD_CONFIG, config);
+                    }
+                },
+                { label: 'Line numbers'},
+                { label: 'Highlight whitespace'},
+                {
+                    label: 'Colorscheme',
+                    submenu: [
+                        {
+                            label: 'System',
+                            type: 'radio',
+                            click: () => {
+                                config.theme = 'system';
+                                win.webContents.send(EVENTS.LOAD_CONFIG, config);
+                                nativeTheme.themeSource = config.theme;
+                            }
+                        },
+                        {
+                            label: 'Light'
+                            type: 'radio',
+                            click: () => {
+                                config.theme = 'light';
+                                win.webContents.send(EVENTS.LOAD_CONFIG, config);
+                                nativeTheme.themeSource = config.theme;
+                            }
+                        },
+                        {
+                            label: 'Dark'
+                            type: 'radio',
+                            click: () => {
+                                config.theme = 'dark';
+                                win.webContents.send(EVENTS.LOAD_CONFIG, config);
+                                nativeTheme.themeSource = config.theme;
+                            }
+                        }
+                    ]
+                }
+                {
+                    label: 'Models',
+                    submenu: [
+                        {
+                            label: 'model 1',
+                            type: 'radio',
+                        },
+                        {
+                            label: 'model 2',
+                            type: 'radio',
+                        },
+                        {
+                            label: 'model 2',
+                            type: 'radio',
+                        }
+                    ]
+                }
+            ]
+        }
+        { type: 'separator' },
+        {
+            role: 'help',
+            submenu: [
+                {
+                    label: 'About',
+                    click: async () => {
+                        const { shell } = require('electron')
+                        await shell.openExternal('https://github.com')
+                    }
+                }
+            ]
+        }
+    ]
+
+    const menu = Menu.buildFromTemplate(menuTemplate);
+    Menu.setApplicationMenu(menu);
+
     watchClipboard();
 }
+
 
 function watchClipboard() {
     let lastClipboardText = clipboard.readText();

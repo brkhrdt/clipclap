@@ -1,5 +1,5 @@
 import { basicSetup, minimalSetup, EditorView } from 'codemirror';
-// import {EditorState, Compartment} from "@codemirror/state"
+import {EditorState, Compartment} from "@codemirror/state"
 import { highlightWhitespace } from '@codemirror/view';
 
 import { Clip } from '../../clip';
@@ -200,19 +200,24 @@ window.electron.onClipboardUpdated((event: Event, history: Clip[]) => {
     updateHistory(history);
 });
 
-function loadConfig(config: Configuration): void {
-    CONFIG = config; // set global
-}
-
 window.electron.onLoadConfig((event: Event, config: Configuration) => {
-    loadConfig(config);
+    CONFIG = config; // set global
+
+    editor.dispatch({
+        effects: lineWrapCompartment.reconfigure(CONFIG.lineWrap ? EditorView.lineWrapping : [])
+    })
 });
 
 const initialText = '';
 const targetElement = document.querySelector('#editor')!;
 
+const lineWrapCompartment = new Compartment();
+
 let editor = new EditorView({
     doc: initialText,
-    extensions: [basicSetup, EditorView.lineWrapping],
+    extensions: [
+        basicSetup,
+        lineWrapCompartment.of(EditorView.lineWrapping)
+    ],
     parent: targetElement,
 });
