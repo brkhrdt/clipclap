@@ -13,35 +13,6 @@ import {searchKeymap, highlightSelectionMatches} from "@codemirror/search"
 import {autocompletion, completionKeymap, closeBrackets, closeBracketsKeymap} from "@codemirror/autocomplete"
 import {lintKeymap} from "@codemirror/lint"
 
-export const basicSetup: Extension = (() => [
-  lineNumbers(),
-  highlightActiveLineGutter(),
-  highlightSpecialChars(),
-  history(),
-  foldGutter(),
-  drawSelection(),
-  dropCursor(),
-  EditorState.allowMultipleSelections.of(true),
-  indentOnInput(),
-  syntaxHighlighting(defaultHighlightStyle, {fallback: true}),
-  bracketMatching(),
-  closeBrackets(),
-  autocompletion(),
-  rectangularSelection(),
-  crosshairCursor(),
-  highlightActiveLine(),
-  highlightSelectionMatches(),
-  keymap.of([
-    ...closeBracketsKeymap,
-    ...defaultKeymap,
-    ...searchKeymap,
-    ...historyKeymap,
-    ...foldKeymap,
-    ...completionKeymap,
-    ...lintKeymap
-  ])
-])()
-
 
 class Editor {
     private view: EditorView;
@@ -126,11 +97,5 @@ class Editor {
         })
     }
 }
-
-// const initialText = '';
-// const targetElement = document.querySelector('#editor')!;
-
-// const lineWrapCompartment = new Compartment();
-// const lineNumberCompartment = new Compartment();
 
 export default Editor;
