@@ -1,6 +1,6 @@
 import { basicSetup, minimalSetup, EditorView } from 'codemirror';
 import {EditorState, Compartment} from "@codemirror/state"
-import { highlightWhitespace } from '@codemirror/view';
+import { highlightWhitespace, lineNumbers } from '@codemirror/view';
 
 import { Clip } from '../../clip';
 import { Configuration } from '../../settings';
@@ -206,18 +206,23 @@ window.electron.onLoadConfig((event: Event, config: Configuration) => {
     editor.dispatch({
         effects: lineWrapCompartment.reconfigure(CONFIG.lineWrap ? EditorView.lineWrapping : [])
     })
+    editor.dispatch({
+        effects: lineNumberCompartment.reconfigure(CONFIG.lineNumbers ? lineNumbers() : [])
+    })
 });
 
 const initialText = '';
 const targetElement = document.querySelector('#editor')!;
 
 const lineWrapCompartment = new Compartment();
+const lineNumberCompartment = new Compartment();
 
 let editor = new EditorView({
     doc: initialText,
     extensions: [
         basicSetup,
-        lineWrapCompartment.of(EditorView.lineWrapping)
+        lineWrapCompartment.of(EditorView.lineWrapping),
+        lineNumberCompartment.of(lineNumbers())
     ],
     parent: targetElement,
 });

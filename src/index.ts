@@ -90,11 +90,19 @@ function createWindow() {
                     type: 'checkbox',
                     checked: config.lineWrap
                     click: () => {
-                        config.lineWrap = config.lineWrap ? false : true;
+                        config.lineWrap = !config.lineWrap;
                         win.webContents.send(EVENTS.LOAD_CONFIG, config);
                     }
                 },
-                { label: 'Line numbers'},
+                {
+                    label: 'Line numbers',
+                    type: 'checkbox',
+                    checked: config.lineNumbers
+                    click: () => {
+                        config.lineNumbers = !config.lineNumbers;
+                        win.webContents.send(EVENTS.LOAD_CONFIG, config);
+                    }
+                },
                 { label: 'Highlight whitespace'},
                 {
                     label: 'Colorscheme',
