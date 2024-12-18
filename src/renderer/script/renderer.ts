@@ -5,6 +5,8 @@ import { highlightWhitespace, lineNumbers } from '@codemirror/view';
 import { Clip } from '../../clip';
 import { Configuration } from '../../settings';
 
+import Editor from './editor';
+
 import '../css/style.css';
 
 // Globals
@@ -29,16 +31,10 @@ promptInput.addEventListener('keyup', async (event) => {
         const prompt = promptInput.value;
         const newDoc = await window.electron.promptLLM(
             prompt,
-            editor.state.doc.toString()
+            editor.getText()
         );
         console.log('new doc from llm', newDoc);
-        editor.dispatch({
-            changes: {
-                from: 0,
-                to: editor.state.doc.length,
-                insert: newDoc,
-            },
-        });
+        editor.setText(newDoc)
     }
 });
 
@@ -53,7 +49,7 @@ promptInput.addEventListener('keydown', function (event) {
 const saveButton = document.getElementById('save-button') as HTMLInputElement;
 saveButton.addEventListener('click', async () => {
     if (currentClip !== null) {
-        currentClip.data = editor.state.doc.toString();
+        currentClip.data = editor.getText();
         window.electron.updateClip(currentClip);
     }
 });
@@ -171,13 +167,7 @@ function updateHistory(history: Clip[]): void {
                 // TODO: Reset the editor undo history:
 
                 currentClip = item;
-                editor.dispatch({
-                    changes: {
-                        from: editor.state.doc.length,
-                        to: editor.state.doc.length,
-                        insert: item.data,
-                    },
-                });
+                editor.appendText(item.data);
             });
 
             buttonDiv.appendChild(copyButton);
@@ -203,26 +193,9 @@ window.electron.onClipboardUpdated((event: Event, history: Clip[]) => {
 window.electron.onLoadConfig((event: Event, config: Configuration) => {
     CONFIG = config; // set global
 
-    editor.dispatch({
-        effects: lineWrapCompartment.reconfigure(CONFIG.lineWrap ? EditorView.lineWrapping : [])
-    })
-    editor.dispatch({
-        effects: lineNumberCompartment.reconfigure(CONFIG.lineNumbers ? lineNumbers() : [])
-    })
+    editor.enableLineNumbers(CONFIG.lineNumbers);
+    editor.enableLineWrap(CONFIG.lineWrap);
 });
 
-const initialText = '';
-const targetElement = document.querySelector('#editor')!;
-
-const lineWrapCompartment = new Compartment();
-const lineNumberCompartment = new Compartment();
-
-let editor = new EditorView({
-    doc: initialText,
-    extensions: [
-        basicSetup,
-        lineWrapCompartment.of(EditorView.lineWrapping),
-        lineNumberCompartment.of(lineNumbers())
-    ],
-    parent: targetElement,
-});
+const targetElement = document.querySelector('#editor') as HTMLElement;
+const editor = new Editor(targetElement);
