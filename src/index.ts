@@ -65,11 +65,6 @@ function createWindow() {
     // Create a custom menu
     const menuTemplate: Electron.MenuItemConstructorOptions[] = [
         {
-            label: 'Menu Item 1',
-            click: () => { logger.info('clicked')}
-        },
-        { type: 'separator' },
-        {
             label: 'View',
             submenu: [
                 { role: 'reload' },
