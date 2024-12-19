@@ -83,7 +83,7 @@ function createWindow() {
                 {
                     label: 'Line wrap',
                     type: 'checkbox',
-                    checked: config.lineWrap
+                    checked: config.lineWrap,
                     click: () => {
                         config.lineWrap = !config.lineWrap;
                         win.webContents.send(EVENTS.LOAD_CONFIG, config);
@@ -92,7 +92,7 @@ function createWindow() {
                 {
                     label: 'Line numbers',
                     type: 'checkbox',
-                    checked: config.lineNumbers
+                    checked: config.lineNumbers,
                     click: () => {
                         config.lineNumbers = !config.lineNumbers;
                         win.webContents.send(EVENTS.LOAD_CONFIG, config);
@@ -112,7 +112,7 @@ function createWindow() {
                             }
                         },
                         {
-                            label: 'Light'
+                            label: 'Light',
                             type: 'radio',
                             click: () => {
                                 config.theme = 'light';
@@ -121,7 +121,7 @@ function createWindow() {
                             }
                         },
                         {
-                            label: 'Dark'
+                            label: 'Dark',
                             type: 'radio',
                             click: () => {
                                 config.theme = 'dark';
@@ -130,7 +130,7 @@ function createWindow() {
                             }
                         }
                     ]
-                }
+                },
                 {
                     label: 'Models',
                     submenu: [
@@ -149,7 +149,7 @@ function createWindow() {
                     ]
                 }
             ]
-        }
+        },
         { type: 'separator' },
         {
             role: 'help',
