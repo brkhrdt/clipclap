@@ -48,10 +48,7 @@ promptInput.addEventListener('keydown', function (event) {
 // Save button from editor back to clip
 const saveButton = document.getElementById('save-button') as HTMLInputElement;
 saveButton.addEventListener('click', async () => {
-    if (currentClip !== null) {
-        currentClip.data = editor.getText();
-        window.electron.updateClip(currentClip);
-    }
+    saveToClipboard(editor.getText());
 });
 
 //
@@ -110,6 +107,18 @@ document.addEventListener('mouseup', (): void => {
 //
 // Clipboard
 //
+
+function saveToClipboard(text: string): void {
+    navigator.clipboard
+        .writeText(text)
+        .then(() => {
+            console.log('Text copied to clipboard');
+        })
+        .catch((err) => {
+            console.error('Error copying text: ', err);
+        });
+}
+
 function updateHistory(history: Clip[]): void {
     const historyElement = document.getElementById('history');
 
@@ -150,14 +159,7 @@ function updateHistory(history: Clip[]): void {
             copyButton.classList.add('copy-button');
             copyButton.textContent = '⧉';
             copyButton.addEventListener('click', () => {
-                navigator.clipboard
-                    .writeText(item.data)
-                    .then(() => {
-                        console.log('Text copied to clipboard');
-                    })
-                    .catch((err) => {
-                        console.error('Error copying text: ', err);
-                    });
+                saveToClipboard(item.data);
             });
             const addButton = document.createElement('button');
             addButton.classList.add('history-item-button');
