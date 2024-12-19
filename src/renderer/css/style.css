@@ -17,6 +17,9 @@
         background: #ddd;
         color: black;
     }
+    .history-item {
+        border: 1px solid grey;
+    }
 }
 
 * {
