@@ -104,7 +104,15 @@ function createWindow() {
                         win.webContents.send(EVENTS.LOAD_CONFIG, config);
                     }
                 },
-                { label: 'Highlight whitespace'},
+                {
+                    label: 'Highlight whitespace',
+                    type: 'checkbox',
+                    checked: config.highlightWhitespace,
+                    click: () => {
+                        config.highlightWhitespace = !config.highlightWhitespace;
+                        win.webContents.send(EVENTS.LOAD_CONFIG, config);
+                    }
+                },
                 {
                     label: 'Colorscheme',
                     submenu: [

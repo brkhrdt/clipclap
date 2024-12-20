@@ -4,7 +4,8 @@ import { Compartment} from "@codemirror/state"
 
 import {keymap, highlightSpecialChars, drawSelection, highlightActiveLine, dropCursor,
         rectangularSelection, crosshairCursor,
-        lineNumbers, highlightActiveLineGutter} from "@codemirror/view"
+        lineNumbers, highlightActiveLineGutter,
+        highlightWhitespace } from "@codemirror/view"
 import {Extension, EditorState} from "@codemirror/state"
 import {defaultHighlightStyle, syntaxHighlighting, indentOnInput, bracketMatching,
         foldGutter, foldKeymap } from "@codemirror/language"
@@ -18,13 +19,15 @@ class Editor {
     private view: EditorView;
     private lineNumbersCompartment = new Compartment();
     private lineWrapCompartment = new Compartment();
+    private highlightWhitespaceCompartment = new Compartment();
 
     constructor(targetElement: HTMLElement, initialText: string='') {
         this.view = new EditorView({
             doc: initialText,
             extensions: [
-                this.lineNumbersCompartment.of(lineNumbers()),
-                this.lineWrapCompartment.of(EditorView.lineWrapping),
+                this.lineNumbersCompartment.of([]),
+                this.lineWrapCompartment.of([]),
+                this.highlightWhitespaceCompartment.of([]),
                 highlightActiveLineGutter(),
                 highlightSpecialChars(),
                 history(),
@@ -90,6 +93,11 @@ class Editor {
     public enableLineWrap(on: boolean=true) {
         this.view.dispatch({
             effects: this.lineWrapCompartment.reconfigure(on ? EditorView.lineWrapping : [])
+        })
+    }
+    public enableHighlightWhitespace(on: boolean=true) {
+        this.view.dispatch({
+            effects: this.highlightWhitespaceCompartment.reconfigure(on ? highlightWhitespace() : [])
         })
     }
 }

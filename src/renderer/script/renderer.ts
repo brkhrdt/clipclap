@@ -206,6 +206,7 @@ window.electron.onLoadConfig((event: Event, config: Configuration) => {
 
     editor.enableLineNumbers(CONFIG.lineNumbers);
     editor.enableLineWrap(CONFIG.lineWrap);
+    editor.enableHighlightWhitespace(CONFIG.highlightWhitespace);
 });
 
 const targetElement = document.querySelector('#editor') as HTMLElement;

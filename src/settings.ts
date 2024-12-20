@@ -12,7 +12,7 @@ const configuration = z.object({
 
     /* Editor */
     lineWrap: z.boolean().default(true),
-    lineNumbers: z.boolean().default(false),
+    lineNumbers: z.boolean().default(true),
     highlightWhitespace: z.boolean().default(false),
 
     /* Models */
