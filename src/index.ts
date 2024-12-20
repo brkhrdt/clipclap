@@ -54,12 +54,18 @@ function createWindow() {
     nativeTheme.themeSource = config.theme;
     logger.debug(`Config: ${config}`);
     logger.debug(JSON.stringify(config));
-    win.webContents.send(EVENTS.LOAD_CONFIG, config);
-
-    win.webContents.send(EVENTS.CLIPBOARD_UPDATED, clipboardHistory.getClips());
 
     win.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
-    logger.info('Window created and loaded.');
+    logger.info('Window loading URL.');
+    win.webContents.on('did-finish-load', () => {
+        logger.info('Window loaded, now sending IPC messages.');
+        win.webContents.send(EVENTS.LOAD_CONFIG, config);
+        logger.info('Loading config to window.');
+        win.webContents.send(EVENTS.CLIPBOARD_UPDATED, clipboardHistory.getClips());
+        logger.info('Sending clipboard history to window.');
+    }
+
+
     // run_llm();
 
     // Create a custom menu
