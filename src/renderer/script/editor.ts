@@ -7,8 +7,8 @@ import {keymap, highlightSpecialChars, drawSelection, highlightActiveLine, dropC
         lineNumbers, highlightActiveLineGutter} from "@codemirror/view"
 import {Extension, EditorState} from "@codemirror/state"
 import {defaultHighlightStyle, syntaxHighlighting, indentOnInput, bracketMatching,
-        foldGutter, foldKeymap} from "@codemirror/language"
-import {defaultKeymap, history, historyKeymap} from "@codemirror/commands"
+        foldGutter, foldKeymap } from "@codemirror/language"
+import {defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirror/commands"
 import {searchKeymap, highlightSelectionMatches} from "@codemirror/search"
 import {autocompletion, completionKeymap, closeBrackets, closeBracketsKeymap} from "@codemirror/autocomplete"
 import {lintKeymap} from "@codemirror/lint"
@@ -42,6 +42,7 @@ class Editor {
                 highlightActiveLine(),
                 highlightSelectionMatches(),
                 keymap.of([
+                    indentWithTab,
                     ...closeBracketsKeymap,
                     ...defaultKeymap,
                     ...searchKeymap,
