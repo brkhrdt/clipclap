@@ -29,12 +29,18 @@ searchInput.addEventListener('input', async () => {
 promptInput.addEventListener('keyup', async (event) => {
     if (event.key === 'Enter' && !event.shiftKey) {
         const prompt = promptInput.value;
-        const newDoc = await window.electron.promptLLM(
+        window.electron.promptLLM(
             prompt,
             editor.getText()
+        ).then(
+            newDoc => {
+                console.log('new doc from llm', newDoc);
+                editor.setText(newDoc);
+            },
+            err => {
+                alert(err);
+            }
         );
-        console.log('new doc from llm', newDoc);
-        editor.setText(newDoc)
     }
 });
 
