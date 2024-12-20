@@ -77,11 +77,13 @@ class Editor {
     }
 
     public appendText(text: string) {
+        // Add text to end of doc
+        const addNewLine = this.view.state.doc.length == 0 ? '' : '\n';
         this.view.dispatch({
             changes: {
                 from: this.view.state.doc.length,
                 to: this.view.state.doc.length,
-                insert: text,
+                insert: addNewLine + text,
             },
         });
     }
