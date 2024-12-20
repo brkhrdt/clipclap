@@ -67,13 +67,6 @@ class Editor {
                 insert: text,
             },
         });
-        this.view.dispatch({
-            changes: {
-                from: this.view.state.doc.length,
-                to: this.view.state.doc.length,
-                insert: text,
-            },
-        });
     }
 
     public appendText(text: string) {
