@@ -1,19 +1,41 @@
-
 import { EditorView } from 'codemirror';
-import { Compartment} from "@codemirror/state"
+import { Compartment } from '@codemirror/state';
 
-import {keymap, highlightSpecialChars, drawSelection, highlightActiveLine, dropCursor,
-        rectangularSelection, crosshairCursor,
-        lineNumbers, highlightActiveLineGutter,
-        highlightWhitespace } from "@codemirror/view"
-import {Extension, EditorState} from "@codemirror/state"
-import {defaultHighlightStyle, syntaxHighlighting, indentOnInput, bracketMatching,
-        foldGutter, foldKeymap } from "@codemirror/language"
-import {defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirror/commands"
-import {searchKeymap, highlightSelectionMatches} from "@codemirror/search"
-import {autocompletion, completionKeymap, closeBrackets, closeBracketsKeymap} from "@codemirror/autocomplete"
-import {lintKeymap} from "@codemirror/lint"
-
+import {
+    keymap,
+    highlightSpecialChars,
+    drawSelection,
+    highlightActiveLine,
+    dropCursor,
+    rectangularSelection,
+    crosshairCursor,
+    lineNumbers,
+    highlightActiveLineGutter,
+    highlightWhitespace,
+} from '@codemirror/view';
+import { Extension, EditorState } from '@codemirror/state';
+import {
+    defaultHighlightStyle,
+    syntaxHighlighting,
+    indentOnInput,
+    bracketMatching,
+    foldGutter,
+    foldKeymap,
+} from '@codemirror/language';
+import {
+    defaultKeymap,
+    history,
+    historyKeymap,
+    indentWithTab,
+} from '@codemirror/commands';
+import { searchKeymap, highlightSelectionMatches } from '@codemirror/search';
+import {
+    autocompletion,
+    completionKeymap,
+    closeBrackets,
+    closeBracketsKeymap,
+} from '@codemirror/autocomplete';
+import { lintKeymap } from '@codemirror/lint';
 
 class Editor {
     private view: EditorView;
@@ -21,7 +43,7 @@ class Editor {
     private lineWrapCompartment = new Compartment();
     private highlightWhitespaceCompartment = new Compartment();
 
-    constructor(targetElement: HTMLElement, initialText: string='') {
+    constructor(targetElement: HTMLElement, initialText: string = '') {
         this.view = new EditorView({
             doc: initialText,
             extensions: [
@@ -36,7 +58,7 @@ class Editor {
                 dropCursor(),
                 EditorState.allowMultipleSelections.of(true),
                 indentOnInput(),
-                syntaxHighlighting(defaultHighlightStyle, {fallback: true}),
+                syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
                 bracketMatching(),
                 closeBrackets(),
                 autocompletion(),
@@ -52,15 +74,15 @@ class Editor {
                     ...historyKeymap,
                     ...foldKeymap,
                     ...completionKeymap,
-                    ...lintKeymap
-                ])
+                    ...lintKeymap,
+                ]),
             ],
             parent: targetElement,
         });
     }
 
     public getText(): string {
-        return this.view.state.doc.toString()
+        return this.view.state.doc.toString();
     }
 
     public setText(text: string) {
@@ -85,20 +107,26 @@ class Editor {
         });
     }
 
-    public enableLineNumbers(on: boolean=true) {
+    public enableLineNumbers(on: boolean = true) {
         this.view.dispatch({
-            effects: this.lineNumbersCompartment.reconfigure(on ? lineNumbers() : [])
-        })
+            effects: this.lineNumbersCompartment.reconfigure(
+                on ? lineNumbers() : []
+            ),
+        });
     }
-    public enableLineWrap(on: boolean=true) {
+    public enableLineWrap(on: boolean = true) {
         this.view.dispatch({
-            effects: this.lineWrapCompartment.reconfigure(on ? EditorView.lineWrapping : [])
-        })
+            effects: this.lineWrapCompartment.reconfigure(
+                on ? EditorView.lineWrapping : []
+            ),
+        });
     }
-    public enableHighlightWhitespace(on: boolean=true) {
+    public enableHighlightWhitespace(on: boolean = true) {
         this.view.dispatch({
-            effects: this.highlightWhitespaceCompartment.reconfigure(on ? highlightWhitespace() : [])
-        })
+            effects: this.highlightWhitespaceCompartment.reconfigure(
+                on ? highlightWhitespace() : []
+            ),
+        });
     }
 }
 

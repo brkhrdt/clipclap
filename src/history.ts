@@ -7,12 +7,11 @@ class Clipboard {
     private maxHistorySize: number;
     private history: ClipHistory;
 
-    constructor(maxHistorySize=30) {
+    constructor(maxHistorySize = 30) {
         this.clipboard = new Map<ClipId, Clip>();
         this.history = new ClipHistory(maxHistorySize);
         this.maxHistorySize = maxHistorySize;
     }
-
 
     addClip(clip: Clip): void {
         if (this.clipboard.size >= this.maxHistorySize) {
@@ -114,6 +113,5 @@ class ClipHistory {
         return this.queue.length;
     }
 }
-
 
 export { Clipboard, ClipHistory };

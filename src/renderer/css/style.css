@@ -30,7 +30,7 @@
     position: relative; /* Enables absolute positioning for the button */
     margin-bottom: 5px; /* Space between items */
     padding: 5px;
-/*     background-color: #f9f9f9; */
+    /*     background-color: #f9f9f9; */
     border: 1px solid grey;
     /* border-radius: 5px; */
     display: flex;
@@ -110,13 +110,13 @@ body {
 }
 
 .column-left {
-/*     background-color: #f0f0f0; */
+    /*     background-color: #f0f0f0; */
     overflow-y: auto; /* Allow vertical scrolling if content exceeds the height */
     width: 50%;
 }
 
 .column-right {
-/*     background-color: #e0e0e0; */
+    /*     background-color: #e0e0e0; */
     width: 50%;
     height: 100vh; /* Make container take full height of the screen */
     display: flex;
@@ -125,14 +125,14 @@ body {
 
 .column-resize-bar {
     cursor: ew-resize;
-/*     background-color: #888; */
+    /*     background-color: #888; */
     width: 2px;
     height: 100%;
     transition: background-color 0.3s;
 }
 
 .resize-bar:hover {
-/*     background-color: #555; */
+    /*     background-color: #555; */
 }
 
 .column-controls {
@@ -181,7 +181,6 @@ body {
     overflow-x: auto;
     /* padding-bottom: 10px; */
 }
-
 
 /* .content { */
 /*     background-color: #fff; */

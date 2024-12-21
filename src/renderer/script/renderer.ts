@@ -1,5 +1,5 @@
 import { basicSetup, minimalSetup, EditorView } from 'codemirror';
-import {EditorState, Compartment} from "@codemirror/state"
+import { EditorState, Compartment } from '@codemirror/state';
 import { highlightWhitespace, lineNumbers } from '@codemirror/view';
 
 import { Clip } from '../../clip';
@@ -30,16 +30,13 @@ promptInput.addEventListener('keyup', async (event) => {
     if (event.key === 'Enter' && !event.shiftKey) {
         const prompt = promptInput.value;
         document.body.style.cursor = 'wait';
-        window.electron.promptLLM(
-            prompt,
-            editor.getText()
-        ).then(
-            newDoc => {
+        window.electron.promptLLM(prompt, editor.getText()).then(
+            (newDoc) => {
                 console.log('new doc from llm', newDoc);
                 editor.setText(newDoc);
                 document.body.style.cursor = 'auto';
             },
-            err => {
+            (err) => {
                 alert(err);
                 document.body.style.cursor = 'auto';
             }
