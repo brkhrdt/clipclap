@@ -1,4 +1,12 @@
-import { app, BrowserWindow, clipboard, ipcMain, nativeTheme, Menu, MenuItemConstructorOptions } from 'electron';
+import {
+    app,
+    BrowserWindow,
+    clipboard,
+    ipcMain,
+    nativeTheme,
+    Menu,
+    MenuItemConstructorOptions,
+} from 'electron';
 import { WebContents, MenuItem } from 'electron';
 import { PathLike, existsSync } from 'fs';
 
@@ -61,10 +69,12 @@ function createWindow() {
         logger.info('Window loaded, now sending IPC messages.');
         win.webContents.send(EVENTS.LOAD_CONFIG, config);
         logger.info('Loading config to window.');
-        win.webContents.send(EVENTS.CLIPBOARD_UPDATED, clipboardHistory.getClips());
+        win.webContents.send(
+            EVENTS.CLIPBOARD_UPDATED,
+            clipboardHistory.getClips()
+        );
         logger.info('Sending clipboard history to window.');
-    }
-
+    });
 
     // run_llm();
 
@@ -80,7 +90,7 @@ function createWindow() {
                 { role: 'resetZoom' },
                 { role: 'zoomIn' },
                 { role: 'zoomOut' },
-            ]
+            ],
         },
         { type: 'separator' },
         {
@@ -93,7 +103,7 @@ function createWindow() {
                     click: () => {
                         config.lineWrap = !config.lineWrap;
                         win.webContents.send(EVENTS.LOAD_CONFIG, config);
-                    }
+                    },
                 },
                 {
                     label: 'Line numbers',
@@ -102,16 +112,17 @@ function createWindow() {
                     click: () => {
                         config.lineNumbers = !config.lineNumbers;
                         win.webContents.send(EVENTS.LOAD_CONFIG, config);
-                    }
+                    },
                 },
                 {
                     label: 'Highlight whitespace',
                     type: 'checkbox',
                     checked: config.highlightWhitespace,
                     click: () => {
-                        config.highlightWhitespace = !config.highlightWhitespace;
+                        config.highlightWhitespace =
+                            !config.highlightWhitespace;
                         win.webContents.send(EVENTS.LOAD_CONFIG, config);
-                    }
+                    },
                 },
                 {
                     label: 'Colorscheme',
@@ -121,29 +132,38 @@ function createWindow() {
                             type: 'radio',
                             click: () => {
                                 config.theme = 'system';
-                                win.webContents.send(EVENTS.LOAD_CONFIG, config);
+                                win.webContents.send(
+                                    EVENTS.LOAD_CONFIG,
+                                    config
+                                );
                                 nativeTheme.themeSource = config.theme;
-                            }
+                            },
                         },
                         {
                             label: 'Light',
                             type: 'radio',
                             click: () => {
                                 config.theme = 'light';
-                                win.webContents.send(EVENTS.LOAD_CONFIG, config);
+                                win.webContents.send(
+                                    EVENTS.LOAD_CONFIG,
+                                    config
+                                );
                                 nativeTheme.themeSource = config.theme;
-                            }
+                            },
                         },
                         {
                             label: 'Dark',
                             type: 'radio',
                             click: () => {
                                 config.theme = 'dark';
-                                win.webContents.send(EVENTS.LOAD_CONFIG, config);
+                                win.webContents.send(
+                                    EVENTS.LOAD_CONFIG,
+                                    config
+                                );
                                 nativeTheme.themeSource = config.theme;
-                            }
-                        }
-                    ]
+                            },
+                        },
+                    ],
                 },
                 {
                     label: 'Models',
@@ -159,10 +179,10 @@ function createWindow() {
                         {
                             label: 'model 2',
                             type: 'radio',
-                        }
-                    ]
-                }
-            ]
+                        },
+                    ],
+                },
+            ],
         },
         { type: 'separator' },
         {
@@ -171,20 +191,19 @@ function createWindow() {
                 {
                     label: 'About',
                     click: async () => {
-                        const { shell } = require('electron')
-                        await shell.openExternal('https://github.com')
-                    }
-                }
-            ]
-        }
-    ]
+                        const { shell } = require('electron');
+                        await shell.openExternal('https://github.com');
+                    },
+                },
+            ],
+        },
+    ];
 
     const menu = Menu.buildFromTemplate(menuTemplate);
     Menu.setApplicationMenu(menu);
 
     watchClipboard();
 }
-
 
 function watchClipboard() {
     let lastClipboardText = clipboard.readText();
