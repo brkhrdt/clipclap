@@ -1,9 +1,9 @@
-type ClipId = number;
+type ClipId = string;
 type ClipData = string;
 type Clip = {
-    id: ClipId;
     date: Date;
     data: ClipData;
+    id?: ClipId;
 };
 
-export { Clip, ClipData };
+export { Clip, ClipData, ClipId };

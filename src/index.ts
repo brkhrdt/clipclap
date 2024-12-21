@@ -15,7 +15,7 @@ import EVENTS from './events';
 // import { ClipboardHistory } from './history';
 import { Clip } from './clip';
 import { filterHistory } from './search';
-import { ClipboardHistory } from './history';
+import { Clipboard } from './history';
 import { readConfig } from './settings';
 
 import LLM from './llm';
@@ -32,7 +32,7 @@ if (require('electron-squirrel-startup')) {
 }
 
 const maxHistorySize = 30;
-let clipboardHistory = new ClipboardHistory(maxHistorySize);
+let clipboardHistory = new Clipboard(maxHistorySize);
 
 const CLIPBOARD_POLL_RATE = 1000;
 let CURRENT_FILTER_QUERY = '';
@@ -67,13 +67,13 @@ function createWindow() {
     logger.info('Window loading URL.');
     win.webContents.on('did-finish-load', () => {
         logger.info('Window loaded, now sending IPC messages.');
-        win.webContents.send(EVENTS.LOAD_CONFIG, config);
         logger.info('Loading config to window.');
+        win.webContents.send(EVENTS.LOAD_CONFIG, config);
+        logger.info('Sending clipboard history to window.');
         win.webContents.send(
             EVENTS.CLIPBOARD_UPDATED,
             clipboardHistory.getClips()
         );
-        logger.info('Sending clipboard history to window.');
     });
 
     // run_llm();
@@ -223,7 +223,6 @@ function watchClipboard() {
             logger.debug(`Clipboard contents: ${lastClipboardText}`);
 
             const clip: Clip = {
-                id: clipCount,
                 date: new Date(),
                 data: currentClipboardText,
             };
