@@ -7,6 +7,7 @@ import {
     Menu,
     MenuItemConstructorOptions,
     Tray,
+    globalShortcut,
 } from 'electron';
 import { WebContents, MenuItem } from 'electron';
 import { PathLike, existsSync } from 'fs';
@@ -318,6 +319,16 @@ function setupIPC() {
     // });
 }
 
+function setupHotkeys() {
+    globalShortcut.register('CmdOrCtrl+Alt+V', () => {
+        if (window.isVisible()) {
+            window.hide();
+        } else {
+            window.show();
+        }
+    });
+}
+
 function getUserDir(): PathLike | null {
     // Return the directory to configure the app depending on platform
     const appUserDir = app.getPath('userData');
@@ -347,6 +358,11 @@ app.whenReady().then(() => {
     createTray();
     createWindow();
     setupIPC();
+    setupHotkeys();
+});
+
+app.on('before-quit', function (event) {
+    tray.destroy();
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
