@@ -18,7 +18,7 @@ import EVENTS from './events';
 import { Clip } from './clip';
 import { filterHistory } from './search';
 import { Clipboard } from './history';
-import { readConfig } from './settings';
+import { Configuration, Keybind, Keybinds, readConfig } from './settings';
 
 import LLM from './llm';
 
@@ -41,6 +41,7 @@ let CURRENT_FILTER_QUERY = '';
 
 const APP_DIR = app.getAppPath();
 
+let CONFIG: Configuration = null;
 let window: BrowserWindow | null = null;
 let tray: Tray | null = null;
 let rendererContents: WebContents | null = null;
@@ -66,7 +67,7 @@ function createTray() {
     tray.setContextMenu(contextMenu);
 }
 
-function createWindow() {
+function createWindow(config: Configuration) {
     window = new BrowserWindow({
         width: 800,
         height: 600,
@@ -80,9 +81,6 @@ function createWindow() {
     // TODO: set entire history first, later just add new clips
     rendererContents = window.webContents;
     logger.info(typeof rendererContents);
-
-    const configFile = getConfigFile();
-    const config = readConfig(configFile);
 
     nativeTheme.themeSource = config.theme;
     logger.debug(`Config: ${config}`);
@@ -319,13 +317,18 @@ function setupIPC() {
     // });
 }
 
-function setupHotkeys() {
-    globalShortcut.register('CmdOrCtrl+Alt+V', () => {
-        if (window.isVisible()) {
-            window.hide();
-        } else {
-            window.show();
-        }
+function setupHotkeys(keybinds: Keybinds) {
+    const functions = {
+        'Show/hide': () => {
+            if (window.isVisible()) {
+                window.hide();
+            } else {
+                window.show();
+            }
+        },
+    };
+    keybinds.forEach((keybind: Keybind) => {
+        globalShortcut.register(keybind.key, functions[keybind.function]);
     });
 }
 
@@ -355,10 +358,13 @@ function getConfigFile(): PathLike | null {
 // Some APIs can only be used after this event occurs.
 // app.on('ready', createWindow);
 app.whenReady().then(() => {
+    const configFile = getConfigFile();
+    CONFIG = readConfig(configFile);
+
     createTray();
-    createWindow();
+    createWindow(CONFIG);
     setupIPC();
-    setupHotkeys();
+    setupHotkeys(CONFIG.keybinds);
 });
 
 app.on('before-quit', function (event) {
@@ -378,7 +384,7 @@ app.on('activate', () => {
     // On OS X it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) {
-        createWindow();
+        createWindow(CONFIG);
     }
 });
 

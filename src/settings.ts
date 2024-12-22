@@ -1,10 +1,27 @@
 import { z } from 'zod';
 import { PathLike, readFileSync } from 'fs';
 
+const keybind = z.object({
+    key: z.string(),
+    function: z.enum(['Show/hide']),
+});
+type Keybind = z.infer<typeof keybind>;
+
+const defaultKeybinds: Keybind[] = [
+    {
+        key: 'CmdOrCtrl+Alt+V',
+        function: 'Show/hide',
+    },
+];
+const keybinds = z.array(keybind).default(defaultKeybinds);
+type Keybinds = z.infer<typeof keybinds>;
+
 const configuration = z.object({
     /* Window */
     // last position?
     theme: z.enum(['system', 'light', 'dark']).default('system'),
+
+    keybinds: keybinds,
 
     /* Clipboard */
     maxClipboardHistory: z.number().default(100),
@@ -48,4 +65,4 @@ function readConfig(filePath: PathLike | null): Configuration {
     }
 }
 
-export { readConfig, Configuration };
+export { readConfig, Configuration, Keybinds, Keybind };
