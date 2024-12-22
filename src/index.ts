@@ -6,6 +6,7 @@ import {
     nativeTheme,
     Menu,
     MenuItemConstructorOptions,
+    Tray,
 } from 'electron';
 import { WebContents, MenuItem } from 'electron';
 import { PathLike, existsSync } from 'fs';
@@ -39,10 +40,33 @@ let CURRENT_FILTER_QUERY = '';
 
 const APP_DIR = app.getAppPath();
 
+let window: BrowserWindow | null = null;
+let tray: Tray | null = null;
 let rendererContents: WebContents | null = null;
 
+function createTray() {
+    tray = new Tray('./icon.png');
+    const contextMenu = Menu.buildFromTemplate([
+        {
+            label: 'Open Window',
+            click: () => {
+                window.show();
+            },
+        },
+        {
+            label: 'Quit',
+            click: () => {
+                app.quit();
+            },
+        },
+    ]);
+
+    tray.setToolTip('ClipClap');
+    tray.setContextMenu(contextMenu);
+}
+
 function createWindow() {
-    const win = new BrowserWindow({
+    window = new BrowserWindow({
         width: 800,
         height: 600,
         webPreferences: {
@@ -53,7 +77,7 @@ function createWindow() {
     });
 
     // TODO: set entire history first, later just add new clips
-    rendererContents = win.webContents;
+    rendererContents = window.webContents;
     logger.info(typeof rendererContents);
 
     const configFile = getConfigFile();
@@ -63,17 +87,22 @@ function createWindow() {
     logger.debug(`Config: ${config}`);
     logger.debug(JSON.stringify(config));
 
-    win.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+    window.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
     logger.info('Window loading URL.');
-    win.webContents.on('did-finish-load', () => {
+    window.webContents.on('did-finish-load', () => {
         logger.info('Window loaded, now sending IPC messages.');
         logger.info('Loading config to window.');
-        win.webContents.send(EVENTS.LOAD_CONFIG, config);
+        window.webContents.send(EVENTS.LOAD_CONFIG, config);
         logger.info('Sending clipboard history to window.');
-        win.webContents.send(
+        window.webContents.send(
             EVENTS.CLIPBOARD_UPDATED,
             clipboardHistory.getClips()
         );
+    });
+
+    window.on('close', (event) => {
+        event.preventDefault();
+        window.hide();
     });
 
     // run_llm();
@@ -102,7 +131,7 @@ function createWindow() {
                     checked: config.lineWrap,
                     click: () => {
                         config.lineWrap = !config.lineWrap;
-                        win.webContents.send(EVENTS.LOAD_CONFIG, config);
+                        window.webContents.send(EVENTS.LOAD_CONFIG, config);
                     },
                 },
                 {
@@ -111,7 +140,7 @@ function createWindow() {
                     checked: config.lineNumbers,
                     click: () => {
                         config.lineNumbers = !config.lineNumbers;
-                        win.webContents.send(EVENTS.LOAD_CONFIG, config);
+                        window.webContents.send(EVENTS.LOAD_CONFIG, config);
                     },
                 },
                 {
@@ -121,7 +150,7 @@ function createWindow() {
                     click: () => {
                         config.highlightWhitespace =
                             !config.highlightWhitespace;
-                        win.webContents.send(EVENTS.LOAD_CONFIG, config);
+                        window.webContents.send(EVENTS.LOAD_CONFIG, config);
                     },
                 },
                 {
@@ -132,7 +161,7 @@ function createWindow() {
                             type: 'radio',
                             click: () => {
                                 config.theme = 'system';
-                                win.webContents.send(
+                                window.webContents.send(
                                     EVENTS.LOAD_CONFIG,
                                     config
                                 );
@@ -144,7 +173,7 @@ function createWindow() {
                             type: 'radio',
                             click: () => {
                                 config.theme = 'light';
-                                win.webContents.send(
+                                window.webContents.send(
                                     EVENTS.LOAD_CONFIG,
                                     config
                                 );
@@ -156,7 +185,7 @@ function createWindow() {
                             type: 'radio',
                             click: () => {
                                 config.theme = 'dark';
-                                win.webContents.send(
+                                window.webContents.send(
                                     EVENTS.LOAD_CONFIG,
                                     config
                                 );
@@ -315,6 +344,7 @@ function getConfigFile(): PathLike | null {
 // Some APIs can only be used after this event occurs.
 // app.on('ready', createWindow);
 app.whenReady().then(() => {
+    createTray();
     createWindow();
     setupIPC();
 });
