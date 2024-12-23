@@ -153,6 +153,65 @@ function updateHistory(history: Clip[]): void {
                 parent: textDiv,
             });
 
+            const tagsDiv = document.createElement('div');
+            tagsDiv.classList.add('history-tags');
+            item.tags = ['a', 'b', 'cde'];
+
+            // Input field for new text, hidden until
+            // add button pressed
+            const tagInput = document.createElement('input');
+            const tagAddButton = document.createElement('button'); // add tag button
+            tagInput.classList.add('history-item-tag-input');
+            tagInput.classList.add('add-tag-input');
+            // tagInput.autofocus = true;
+            tagInput.style.display = 'none';
+            tagInput.addEventListener("keydown", (event) => {
+                if (event.key == "Enter") {
+                    // TODO check for duplicate or empty string
+                    const newTagText = tagInput.value;
+                    tagInput.value = '';
+                    tagInput.style.display = 'none';
+                    tagAddButton.style.display = 'inline-block';
+
+                    item.tags.push(newTagText)
+                    // TODO update clip to main
+
+                    // create new tag button
+                    const tagButton = document.createElement('button');
+                    tagButton.classList.add('history-item-tag-button');
+                    tagButton.classList.add('tag-button');
+                    tagButton.textContent = newTagText;
+
+                    tagsDiv.appendChild(tagButton);
+                    // alert(`add tag ${newTagText}`);
+                }
+                
+            })
+            tagsDiv.appendChild(tagInput);
+
+            // add button
+            tagAddButton.classList.add('history-item-tag-button');
+            tagAddButton.classList.add('add-tag-button');
+            tagAddButton.textContent = '+';
+            tagAddButton.addEventListener('click', () => {
+                tagInput.style.display = 'inline-block';
+                tagInput.style.width = '200px';
+                tagAddButton.style.display = 'none';
+                tagInput.focus();
+            });
+            tagsDiv.appendChild(tagAddButton);
+
+            item.tags.forEach((tag) => {
+                const tagButton = document.createElement('button');
+                tagButton.classList.add('history-item-tag-button');
+                tagButton.classList.add('tag-button');
+                tagButton.textContent = tag;
+
+                tagsDiv.appendChild(tagButton);
+            });
+            // tagsDiv.textContent = 'hi'; //item.tags;
+            // tagsDiv.
+
             const dateDiv = document.createElement('div');
             dateDiv.classList.add('history-date');
             dateDiv.textContent = item.date.toLocaleString();
@@ -182,6 +241,7 @@ function updateHistory(history: Clip[]): void {
             buttonDiv.appendChild(addButton);
 
             contentDiv.appendChild(textDiv);
+            contentDiv.appendChild(tagsDiv);
             contentDiv.appendChild(dateDiv);
 
             itemDiv.appendChild(contentDiv);

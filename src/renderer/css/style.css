@@ -80,9 +80,36 @@
     cursor: pointer;
 }
 
+.history-tags {
+    margin-right: 1px;
+}
 .history-item-button:hover {
     background-color: #45a049;
 }
+
+.history-item-tag-input {
+    margin-right: 3px;
+      width: 0;
+  border: 1px solid transparent;
+  padding: 0;
+  transition: width 0.3s ease;
+}
+
+.history-item-tag-button {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 10px;
+}
+
+.history-item-tag-button:hover {
+    background-color: red;
+}
+.add-tag-button:hover {
+    background-color: #45a049;
+}
+
 
 body {
     font-family: Arial, sans-serif;
