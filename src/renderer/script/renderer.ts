@@ -155,25 +155,27 @@ function updateHistory(history: Clip[]): void {
 
             const tagsDiv = document.createElement('div');
             tagsDiv.classList.add('history-tags');
-            item.tags = ['a', 'b', 'cde'];
+            item.tags = [];
 
             // Input field for new text, hidden until
             // add button pressed
             const tagInput = document.createElement('input');
             const tagAddButton = document.createElement('button'); // add tag button
-            tagInput.classList.add('history-item-tag-input');
+            tagInput.classList.add('history-item-tag-input-hidden');
             tagInput.classList.add('add-tag-input');
             // tagInput.autofocus = true;
-            tagInput.style.display = 'none';
-            tagInput.addEventListener("keydown", (event) => {
-                if (event.key == "Enter") {
+            // tagInput.style.display = 'none';
+            tagInput.addEventListener('keydown', (event) => {
+                if (event.key == 'Enter') {
                     // TODO check for duplicate or empty string
                     const newTagText = tagInput.value;
                     tagInput.value = '';
-                    tagInput.style.display = 'none';
+                    // tagInput.style.display = 'none';
                     tagAddButton.style.display = 'inline-block';
+                    tagInput.classList.remove('history-item-tag-input-visible');
+                    tagInput.classList.add('history-item-tag-input-hidden');
 
-                    item.tags.push(newTagText)
+                    item.tags.push(newTagText);
                     // TODO update clip to main
 
                     // create new tag button
@@ -185,8 +187,7 @@ function updateHistory(history: Clip[]): void {
                     tagsDiv.appendChild(tagButton);
                     // alert(`add tag ${newTagText}`);
                 }
-                
-            })
+            });
             tagsDiv.appendChild(tagInput);
 
             // add button
@@ -194,8 +195,10 @@ function updateHistory(history: Clip[]): void {
             tagAddButton.classList.add('add-tag-button');
             tagAddButton.textContent = '+';
             tagAddButton.addEventListener('click', () => {
-                tagInput.style.display = 'inline-block';
-                tagInput.style.width = '200px';
+                tagInput.classList.remove('history-item-tag-input-hidden');
+                tagInput.classList.add('history-item-tag-input-visible');
+                // tagInput.style.display = 'inline-block';
+                // tagInput.style.width = '200px';
                 tagAddButton.style.display = 'none';
                 tagInput.focus();
             });

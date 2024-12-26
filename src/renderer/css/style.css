@@ -80,19 +80,26 @@
     cursor: pointer;
 }
 
-.history-tags {
-    margin-right: 1px;
-}
 .history-item-button:hover {
     background-color: #45a049;
 }
 
-.history-item-tag-input {
+.history-item-tag-input-hidden {
+    visibility: hidden;
+    margin-right: 0px;
+    max-width: 0;
+    border: none;
+    padding: 0;
+    transition: max-width 0.3s ease;
+}
+.history-item-tag-input-visible {
+    visibility: visible;
+    display: inline-block;
     margin-right: 3px;
-      width: 0;
-  border: 1px solid transparent;
-  padding: 0;
-  transition: width 0.3s ease;
+    max-width: 200px;
+    border: 1px solid transparent;
+    padding: 0;
+    transition: max-width 0.3s ease;
 }
 
 .history-item-tag-button {
@@ -109,7 +116,6 @@
 .add-tag-button:hover {
     background-color: #45a049;
 }
-
 
 body {
     font-family: Arial, sans-serif;
