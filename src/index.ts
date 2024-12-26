@@ -237,8 +237,6 @@ function watchClipboard() {
     let lastClipboardText = clipboard.readText();
     logger.info('Started monitoring clipboard.');
 
-    let clipCount: number = 0;
-
     setInterval(() => {
         const currentClipboardText = clipboard.readText();
 
@@ -246,7 +244,6 @@ function watchClipboard() {
             currentClipboardText &&
             currentClipboardText !== lastClipboardText
         ) {
-            clipCount += 1; // Used as ID
             lastClipboardText = currentClipboardText;
             logger.debug(`Clipboard contents: ${lastClipboardText}`);
 
@@ -255,9 +252,7 @@ function watchClipboard() {
                 data: currentClipboardText,
             };
             clipboardHistory.addClip(clip);
-            logger.debug(`History: ${clipboardHistory}`);
-
-            logger.info('Clipboard updated: ', { text: currentClipboardText });
+            logger.debug(`History: ${JSON.stringify(clipboardHistory)}`);
             updateClipboardOnRenderer();
         }
     }, CLIPBOARD_POLL_RATE);
