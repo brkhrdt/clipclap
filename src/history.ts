@@ -1,6 +1,7 @@
 import * as crypto from 'crypto';
 
 import { Clip, ClipId } from './clip';
+import logger from './logger';
 
 class Clipboard {
     private clipboard: Map<ClipId, Clip>;
@@ -9,7 +10,7 @@ class Clipboard {
 
     constructor(maxHistorySize = 30) {
         this.clipboard = new Map<ClipId, Clip>();
-        this.history = new ClipHistory(maxHistorySize);
+        this.history = new ClipHistory();
         this.maxHistorySize = maxHistorySize;
     }
 
@@ -25,8 +26,11 @@ class Clipboard {
             id = this.generateKey(clip.data);
             clip.id = id;
         }
+
+        if (!(this.history.has(id))) {
+            this.clipboard.set(id, clip);
+        }
         this.history.add(id);
-        this.clipboard.set(id, clip);
     }
 
     updateClip(clip: Clip): void {
@@ -34,11 +38,12 @@ class Clipboard {
             throw new Error(`Clipboard does not contain the id: ${clip.id}`);
         }
         this.clipboard.set(clip.id, clip);
+        logger.debug(`Existing clip updated: ${JSON.stringify(clip)}`);
     }
 
     private dropOldestClip(): void {
-        const firstKey = this.clipboard.keys().next().value;
-        this.clipboard.delete(firstKey);
+        const oldestClipId = this.history.pop();
+        this.clipboard.delete(oldestClipId);
     }
 
     getClip(id: ClipId): Clip | undefined {
@@ -71,21 +76,22 @@ class ClipHistory {
     private queue: ClipId[] = [];
     private set: Set<ClipId> = new Set();
 
-    private max: number;
 
-    constructor(max: number) {
-        this.max = max;
+    constructor() {
     }
 
     add(key: ClipId): void {
-        if (this.length >= this.max) {
-            this.pop();
-        }
         if (this.set.has(key)) {
+            // id already exists, filter it out and then add to top
             this.queue = this.queue.filter((el) => el !== key);
         }
         this.queue.unshift(key);
+
         this.set.add(key);
+    }
+
+    has(key: ClipId): boolean {
+        return this.set.has(key);
     }
 
     clear(): void {
