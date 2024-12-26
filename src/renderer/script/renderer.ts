@@ -155,7 +155,9 @@ function updateHistory(history: Clip[]): void {
 
             const tagsDiv = document.createElement('div');
             tagsDiv.classList.add('history-tags');
-            item.tags = [];
+            if (!('tags' in item)) {
+                item.tags = [];
+            }
 
             // Input field for new text, hidden until
             // add button pressed
@@ -176,7 +178,7 @@ function updateHistory(history: Clip[]): void {
                     tagInput.classList.add('history-item-tag-input-hidden');
 
                     item.tags.push(newTagText);
-                    // TODO update clip to main
+                    window.electron.updateClip(item);
 
                     // create new tag button
                     const tagButton = document.createElement('button');
