@@ -33,7 +33,7 @@ describe('Clipboard', () => {
 
     it('should move repeated clip to the top and preserve tags', () => {
         clipboard.addClip(clip1);
-        let clip1Mod =JSON.parse(JSON.stringify(clip1)); //deep copy
+        let clip1Mod = JSON.parse(JSON.stringify(clip1)); //deep copy
         clip1Mod.tags = ['test'];
         clipboard.updateClip(clip1Mod);
         clipboard.addClip(clip2);

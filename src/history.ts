@@ -27,7 +27,7 @@ class Clipboard {
             clip.id = id;
         }
 
-        if (!(this.history.has(id))) {
+        if (!this.history.has(id)) {
             this.clipboard.set(id, clip);
         }
         this.history.add(id);
@@ -76,9 +76,7 @@ class ClipHistory {
     private queue: ClipId[] = [];
     private set: Set<ClipId> = new Set();
 
-
-    constructor() {
-    }
+    constructor() {}
 
     add(key: ClipId): void {
         if (this.set.has(key)) {
