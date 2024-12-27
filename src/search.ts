@@ -4,7 +4,7 @@ import { Clip } from './clip';
 import logger from './logger'; // Import the logger
 
 const options: IFuseOptions<Clip> = {
-    keys: ['data'],
+    keys: ['data', 'tags'],
     useExtendedSearch: true,
 };
 
