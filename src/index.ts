@@ -44,6 +44,7 @@ let CONFIG: Configuration = null;
 let window: BrowserWindow | null = null;
 let tray: Tray | null = null;
 let rendererContents: WebContents | null = null;
+let watchClipboardInterval: NodeJS.Timeout = null;
 
 function createTray() {
     tray = new Tray('./icon.png');
@@ -98,6 +99,7 @@ function createWindow(config: Configuration) {
         );
     });
 
+    // Hide window instead of closing, hotkey will show
     window.on('close', (event) => {
         event.preventDefault();
         window.hide();
@@ -236,7 +238,7 @@ function watchClipboard() {
     let lastClipboardText = clipboard.readText();
     logger.info('Started monitoring clipboard.');
 
-    setInterval(() => {
+    watchClipboardInterval = setInterval(() => {
         const currentClipboardText = clipboard.readText();
 
         if (
@@ -368,26 +370,23 @@ app.whenReady().then(() => {
     setupHotkeys(CONFIG.keybinds);
 });
 
-app.on('before-quit', function (event) {
-    tray.destroy();
-});
-
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
-app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
-        app.quit();
-    }
-});
-
 app.on('activate', () => {
     // On OS X it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) {
+        // TODO maybe just show window?
         createWindow(CONFIG);
     }
 });
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and import them here.
+app.on('before-quit', function (event) {
+    // Cleanup
+    tray.destroy();
+    globalShortcut.unregisterAll();
+    clearInterval(watchClipboardInterval);
+    window.destroy(); // close event is overridden to hide window
+});
+
+app.on('quit', () => {
+  // Perform final cleanup if needed
+});
