@@ -18,7 +18,7 @@ import EVENTS from './events';
 import { Clip } from './clip';
 import { filterHistory } from './search';
 import { Clipboard } from './history';
-import { Configuration, Keybind, Keybinds, readConfig } from './settings';
+import { Configuration, Keybind, Keybinds, llmAPI, readConfig } from './settings';
 
 import LLM from './llm';
 
@@ -38,6 +38,7 @@ let clipboardHistory = new Clipboard(maxHistorySize);
 
 const CLIPBOARD_POLL_RATE = 1000;
 let CURRENT_FILTER_QUERY = '';
+let CURRENT_MODEL: llmAPI = null;
 
 const APP_DIR = app.getAppPath();
 
@@ -280,15 +281,20 @@ function updateClipboardOnRenderer() {
     }
 }
 
+function setCurrentModel(model: llmAPI) {
+    CURRENT_MODEL = model;
+}
+
 function setupIPC() {
     // Bi-directional communication: Handle data fetch request
     ipcMain.handle(EVENTS.PROMPT_LLM, async (event, prompt, text) => {
         logger.debug(`${event} ${prompt}`);
-        const baseurl = 'http://localhost:11434/v1';
-        const apikey = 'ollama';
-        const systemprompt = `You are an expert assistant and will be given some text to modify based on the user\'s request. Only modify the given text. Be concise and do not give any information that is not asked for.\n\nHere is the text:\n${text}`;
+        const baseurl = CURRENT_MODEL.baseurl;
+        const apikey = CURRENT_MODEL.apikey;
+        const modelName = CURRENT_MODEL.name;
+        const systemprompt = CURRENT_MODEL.systemprompt.replace('<TEXT>', text);
 
-        const llm = new LLM(baseurl, apikey, systemprompt);
+        const llm = new LLM(baseurl, apikey, systemprompt, modelName);
         // TODO handle failed connection
         return await llm.runLLM(prompt);
     });
@@ -356,6 +362,7 @@ app.whenReady().then(() => {
     const configFile = getConfigFile();
     CONFIG = readConfig(configFile);
 
+    setCurrentModel(CONFIG.models[0]);
     createTray();
     createWindow(CONFIG);
     setupIPC();

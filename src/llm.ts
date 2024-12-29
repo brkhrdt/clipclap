@@ -4,16 +4,19 @@ import logger from './logger'; // Import the logger
 class LLM {
     private openai: OpenAI;
     private systemPrompt: string;
+    private modelName: string;
 
-    constructor(baseURL: string, apiKey: string, systemPrompt: string) {
+    constructor(baseURL: string, apiKey: string, systemPrompt: string, modelName: string) {
         this.openai = new OpenAI({ baseURL, apiKey });
         this.systemPrompt = systemPrompt;
+        this.modelName = modelName;
+        logger.debug(`LLM system prompt: ${this.systemPrompt}`);
     }
 
     public async runLLM(userPrompt: string): Promise<string> {
         logger.debug(`Running LLM prompt: ${userPrompt}`);
         const completion = await this.openai.chat.completions.create({
-            model: 'gemma2:27b',
+            model: this.modelName,
             messages: [
                 {
                     role: 'system',
