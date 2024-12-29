@@ -33,10 +33,8 @@ if (require('electron-squirrel-startup')) {
     app.quit();
 }
 
-const maxHistorySize = 30;
-let clipboardHistory = new Clipboard(maxHistorySize);
+let CLIPBOARD: Clipboard = null;
 
-const CLIPBOARD_POLL_RATE = 1000;
 let CURRENT_FILTER_QUERY = '';
 let CURRENT_MODEL: llmAPI = null;
 
@@ -96,7 +94,7 @@ function createWindow(config: Configuration) {
         logger.info('Sending clipboard history to window.');
         window.webContents.send(
             EVENTS.CLIPBOARD_UPDATED,
-            clipboardHistory.getClips()
+            CLIPBOARD.getClips()
         );
     });
 
@@ -252,11 +250,11 @@ function watchClipboard() {
                 date: new Date(),
                 data: currentClipboardText,
             };
-            clipboardHistory.addClip(clip);
-            logger.debug(`History: ${JSON.stringify(clipboardHistory)}`);
+            CLIPBOARD.addClip(clip);
+            logger.debug(`History: ${JSON.stringify(CLIPBOARD)}`);
             updateClipboardOnRenderer();
         }
-    }, CLIPBOARD_POLL_RATE);
+    }, CONFIG.clipboardPollRate);
 }
 
 function updateClipboardOnRenderer() {
@@ -265,7 +263,7 @@ function updateClipboardOnRenderer() {
             logger.debug(`Active filter: ${CURRENT_FILTER_QUERY}`);
             filterHistory(
                 CURRENT_FILTER_QUERY,
-                clipboardHistory.getClips()
+                CLIPBOARD.getClips()
             ).then((filteredHistory) => {
                 rendererContents.send(
                     EVENTS.CLIPBOARD_UPDATED,
@@ -275,7 +273,7 @@ function updateClipboardOnRenderer() {
         } else {
             rendererContents.send(
                 EVENTS.CLIPBOARD_UPDATED,
-                clipboardHistory.getClips()
+                CLIPBOARD.getClips()
             );
         }
     }
@@ -302,13 +300,13 @@ function setupIPC() {
     ipcMain.handle(EVENTS.FILTER_HISTORY, async (event, query) => {
         CURRENT_FILTER_QUERY = query;
         logger.debug(`${event} ${query}`);
-        return await filterHistory(query, clipboardHistory.getClips());
+        return await filterHistory(query, CLIPBOARD.getClips());
     });
 
     // // Uni-directional communication: Handle logging request
     ipcMain.on(EVENTS.UPDATE_CLIP, (event, clip) => {
         logger.debug('Update clip from renderer:', clip);
-        clipboardHistory.updateClip(clip);
+        CLIPBOARD.updateClip(clip);
         updateClipboardOnRenderer();
     });
 
@@ -361,6 +359,7 @@ function getConfigFile(): PathLike | null {
 app.whenReady().then(() => {
     const configFile = getConfigFile();
     CONFIG = readConfig(configFile);
+    CLIPBOARD = new Clipboard(CONFIG.maxClipboardHistory);
 
     setCurrentModel(CONFIG.models[0]);
     createTray();
