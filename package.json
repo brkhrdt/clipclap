@@ -2,7 +2,7 @@
     "name": "clipclap",
     "productName": "clipclap",
     "version": "0.0.1",
-    "description": "My Electron application description",
+    "description": "Clipboard manager with editor and AI ✂️👏",
     "main": ".webpack/main",
     "scripts": {
         "start": "electron-forge start",
@@ -22,6 +22,7 @@
         "@electron-forge/plugin-auto-unpack-natives": "^7.5.0",
         "@electron-forge/plugin-fuses": "^7.5.0",
         "@electron-forge/plugin-webpack": "^7.5.0",
+        "@electron-forge/publisher-github": "^7.6.0",
         "@electron/fuses": "^1.8.0",
         "@types/codemirror": "^5.60.15",
         "@types/node": "^22.9.0",
