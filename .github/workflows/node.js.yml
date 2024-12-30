@@ -30,4 +30,8 @@ jobs:
     - run: npm run package
     - run: npm run make
     - run: npm run test
-    - run: npm run publish
+    - name: Publish
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: npm run publish
+
