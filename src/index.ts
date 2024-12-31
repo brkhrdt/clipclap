@@ -47,7 +47,7 @@ let rendererContents: WebContents | null = null;
 let watchClipboardInterval: NodeJS.Timeout = null;
 
 function createTray() {
-    tray = new Tray('./icon.png');
+    tray = new Tray(__dirname+'/assets/icons/icon.png');
     const contextMenu = Menu.buildFromTemplate([
         {
             label: 'Open Window',
