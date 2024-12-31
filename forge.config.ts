@@ -60,6 +60,7 @@ const config: ForgeConfig = {
                     owner: 'brkhrdt',
                     name: 'clipclap'
                 },
+                force: true,
                 prerelease: false,
                 draft: true
             }
